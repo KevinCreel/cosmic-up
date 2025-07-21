@@ -1,0 +1,14 @@
+fish_shell_fisher_install_url: https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish
+fish_shell_set_default_shell: true
+fish_shell_path: /usr/bin/fish
+fish_shell_fisher_plugins:
+  - jorgebucaran/nvm.fish
+  - PatrickF1/fzf.fish
+  - mattmc3/themepak.fish
+  - decors/fish-colored-man
+  - kidonng/zoxide.fish
+  - IlanCosman/tide@v6
+  - jorgebucaran/autopair.fish
+fish_shell_add_paths:
+  - ~/.cargo/bin
+  - ~/.local/bin

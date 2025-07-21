@@ -1,0 +1,27 @@
+# UFW firewall configuration tasks
+- name: Include vars
+  ansible.builtin.include_vars: ../vars/main.yml
+
+# Configure UFW firewall settings
+- name: Configure UFW
+  become: true
+  block:
+    # Set default incoming policy
+    - name: Set incoming policy
+      community.general.ufw:
+        direction: incoming
+        policy: "{{ ufw_incoming_policy_default }}"
+      notify: Reload UFW
+
+    # Set default outgoing policy
+    - name: Set outgoing policy
+      community.general.ufw:
+        direction: outgoing
+        policy: "{{ ufw_outgoing_policy_default }}"
+      notify: Reload UFW
+
+    # Enable UFW firewall
+    - name: Enable UFW
+      community.general.ufw:
+        state: enabled
+      notify: Reload UFW

@@ -1,0 +1,31 @@
+# GitHub CLI installation and configuration
+- name: Include vars
+  ansible.builtin.include_vars: ../vars/main.yml
+
+# Install GitHub CLI via official repository
+- name: Install GitHub CLI
+  become: true
+  block:
+    # Add GitHub CLI GPG key
+    - name: Add GPG key
+      ansible.builtin.apt_key:
+        url: "{{ github_cli_keyring_url }}"
+        state: present
+
+    # Add GitHub CLI repository
+    - name: Add repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64] {{ github_cli_repo }} stable main"
+        state: present
+        filename: github-cli
+
+    # Update package cache
+    - name: Update cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    # Install GitHub CLI package
+    - name: Install gh CLI
+      ansible.builtin.apt:
+        name: gh
+        state: present

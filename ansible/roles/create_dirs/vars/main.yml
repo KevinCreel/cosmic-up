@@ -1,0 +1,7 @@
+create_dirs_list:
+  - path: "{{ home_dir + '/.ssh/' }}"
+    mode: '700'
+  - path: "{{ apps_dir }}"
+    mode: '755'
+  - path: "{{ config_dir }}"
+    mode: '755'

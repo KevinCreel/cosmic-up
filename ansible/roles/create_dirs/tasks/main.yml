@@ -1,0 +1,13 @@
+# Directory creation tasks
+- name: Include vars
+  ansible.builtin.include_vars: ../vars/main.yml
+
+# Create user directories with proper permissions
+- name: Create user directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ local_user }}"
+    group: "{{ local_user }}"
+    mode: "{{ item.mode }}"
+  with_items: "{{ create_dirs_list }}"

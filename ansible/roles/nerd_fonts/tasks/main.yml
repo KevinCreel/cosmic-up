@@ -1,0 +1,16 @@
+# Create font installation directory
+- name: Create font directory
+  ansible.builtin.file:
+    path: "{{ nerd_fonts_install_dir }}"
+    state: directory
+    mode: '755'
+
+# Download and extract Nerd Fonts
+- name: Install Nerd Fonts
+  ansible.builtin.unarchive:
+    src: "{{ nerd_fonts_repo_url }}/{{ item }}.zip"
+    dest: "{{ nerd_fonts_install_dir }}"
+    remote_src: true
+    mode: '644'
+  loop: "{{ nerd_fonts_install }}"
+  notify: Refresh Font Cache

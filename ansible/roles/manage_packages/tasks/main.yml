@@ -1,0 +1,98 @@
+# Package management tasks for various package managers
+- name: Include vars
+  ansible.builtin.include_vars: ../vars/main.yml
+
+# Manage APT packages (Ubuntu/Debian)
+- name: Manage apt packages
+  become: true
+  block:
+    # Add PPAs for additional repositories
+    - name: Add PPAs
+      ansible.builtin.apt_repository:
+        validate_certs: false
+        repo: "{{ item }}"
+        state: present
+      with_items: "{{ manage_packages_apt.ppas }}"
+
+    # Update package cache
+    - name: Update cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    # Install packages
+    - name: Install packages
+      ansible.builtin.apt:
+        name: "{{ manage_packages_apt.install }}"
+        state: present
+
+    # Remove packages
+    - name: Remove packages
+      ansible.builtin.apt:
+        name: "{{ manage_packages_apt.remove }}"
+        state: absent
+
+# Manage Snap packages
+- name: Manage snap packages
+  become: true
+  block:
+    # Install classic snap packages
+    - name: Install classic snaps
+      community.general.snap:
+        channel: "{{ manage_packages_snap.channel }}"
+        name: "{{ manage_packages_snap.install.snap_classic }}"
+        state: present
+        classic: true
+
+    # Install regular snap packages
+    - name: Install snaps
+      community.general.snap:
+        channel: "{{ manage_packages_snap.channel }}"
+        name: "{{ manage_packages_snap.install.snap }}"
+        state: present
+
+    # Remove snap packages
+    - name: Remove snaps
+      community.general.snap:
+        name: "{{ manage_packages_snap.remove }}"
+        state: absent
+
+# Configure Flatpak repository
+- name: Add flathub remote
+  become: true
+  community.general.flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# Manage Flatpak packages
+- name: Install flatpaks
+  community.general.flatpak:
+    name: "{{ manage_packages_flatpak.install }}"
+    state: latest
+
+# Remove Flatpak packages
+- name: Remove flatpaks
+  community.general.flatpak:
+    name: "{{ manage_packages_flatpak.remove }}"
+    state: absent
+
+# Install Rust/Cargo packages
+- name: Install cargo packages
+  community.general.cargo:
+    name: "{{ manage_packages_cargo }}"
+    state: latest
+
+# Install Python packages via pipx
+- name: Install pipx packages
+  community.general.pipx:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ manage_packages_pipx }}"
+
+# Download AppImage files
+- name: Download AppImages
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "{{ apps_dir }}/{{ item | regex_search('([^\/]+$)') }}"
+    mode: '755'
+  loop: "{{ manage_packages_appimage }}"

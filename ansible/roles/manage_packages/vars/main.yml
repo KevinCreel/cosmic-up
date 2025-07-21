@@ -1,0 +1,64 @@
+manage_packages_apt:
+  ppas:
+    - ppa:neovim-ppa/unstable
+    - ppa:fish-shell/release-4
+    - ppa:longsleep/golang-backports
+    - ppa:teejee2008/timeshift
+    - ppa:zhangsongcui3371/fastfetch
+  install:
+    - build-essential
+    - ca-certificates
+    - apt-transport-https
+    - curl
+    - wget
+    - make
+    - ubuntu-restricted-extras
+    - software-properties-common
+    - snapd
+    - cargo
+    - flatpak
+    - golang-go
+    - yubikey-manager-qt
+    - yadm
+    - bat
+    - vlc
+    - ripgrep
+    - xclip
+    - neovim
+    - timeshift
+    - fastfetch
+    - btop
+    - ffmpeg
+    - tilix
+    - vim
+    - sqlite3
+    - zoxide
+    - keychain
+  remove: []
+manage_packages_snap:
+  channel: latest/edge
+  install:
+    snap_classic:
+      - code
+    snap:
+      - tldr
+  remove: []
+manage_packages_flatpak:
+  install:
+    - it.mijorus.gearlever
+    - dev.edfloreshz.CosmicTweaks
+    - org.chromium.Chromium
+    - org.signal.Signal
+    - md.obsidian.Obsidian
+    - com.slack.Slack
+    - com.github.finefindus.eyedropper
+    - us.zoom.Zoom
+    - org.kde.krita
+  remove: []
+manage_packages_pipx:
+  - pipx
+  - httpie
+manage_packages_cargo:
+  - topgrade
+manage_packages_appimage:
+  - https://downloads.cursor.com/production/faa03b17cce93e8a80b7d62d57f5eda6bb6ab9fa/linux/x64/Cursor-1.2.2-x86_64.AppImage

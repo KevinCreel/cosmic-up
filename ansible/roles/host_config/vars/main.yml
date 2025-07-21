@@ -1,0 +1,5 @@
+host_config_passwordless_sudo: true
+host_config_timezone: America/New_York
+host_config_hostname: cosmic
+host_config_locales:
+  - en_US.UTF-8

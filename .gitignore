@@ -1,0 +1,27 @@
+### Ansible ###
+*.retry
+.ansible/
+
+### VisualStudioCode ###
+.vscode/
+.history/
+*.vsix
+.history
+.ionide
+
+### Linux ###
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+nohup.out
+
+### Virtualenv created to run ansible ###
+ansible-venv
+
+### Enviroment files ###
+*.env
+*.env.*
+!*.env.template
+!*.env.*.template

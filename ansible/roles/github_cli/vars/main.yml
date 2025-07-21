@@ -1,0 +1,2 @@
+github_cli_repo: https://cli.github.com/packages
+github_cli_keyring_url: "{{ github_cli_repo }}/githubcli-archive-keyring.gpg"

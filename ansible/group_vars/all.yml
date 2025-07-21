@@ -1,0 +1,6 @@
+local_user: "{{ ansible_user_id }}"
+local_user_gid: "{{ ansible_user_gid }}"
+home_dir: "{{ lookup('env', 'HOME') }}"
+apps_dir: "{{ home_dir }}/Applications"
+config_dir: "{{ home_dir }}/.config"
+local_dir: "{{ home_dir }}/.local"

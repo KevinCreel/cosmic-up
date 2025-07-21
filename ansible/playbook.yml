@@ -1,0 +1,47 @@
+# Main playbook for Cosmic OS setup and configuration
+- name: Setup Cosmic OS
+  hosts: localhost
+  tasks:
+    - name: Configure host settings
+      ansible.builtin.include_role:
+        name: host_config
+
+    - name: Create required directories
+      ansible.builtin.include_role:
+        name: create_dirs
+
+    - name: Manage system packages
+      ansible.builtin.include_role:
+        name: manage_packages
+
+    - name: Configure ufw firewall
+      ansible.builtin.include_role:
+        name: ufw
+
+    - name: Install Nerd Fonts
+      ansible.builtin.include_role:
+        name: nerd_fonts
+
+    - name: Install and configure Docker
+      ansible.builtin.include_role:
+        name: docker
+
+    - name: Install and configure fish shell
+      ansible.builtin.include_role:
+        name: fish_shell
+
+    - name: Install Kickstart
+      ansible.builtin.include_role:
+        name: kickstart
+
+    - name: Install GitHub CLI
+      ansible.builtin.include_role:
+        name: github_cli
+
+    - name: Install yadm and setup dotfiles
+      ansible.builtin.include_role:
+        name: yadm
+
+    - name: Install vim-plug
+      ansible.builtin.include_role:
+        name: vimplug

@@ -1,0 +1,40 @@
+# Docker installation and configuration tasks
+- name: Include vars
+  ansible.builtin.include_vars: ../vars/main.yml
+
+# Install Docker via Snap
+- name: Install Docker via Snap
+  become: true
+  block:
+    # Ensure snapd is installed
+    - name: Ensure snapd is installed
+      ansible.builtin.package:
+        name: snapd
+        state: present
+
+    # Install Docker via Snap
+    - name: Install Docker snap
+      community.general.snap:
+        channel: "{{ docker_snap_channel }}"
+        name: docker
+        state: present
+
+    # Create docker group for user access
+    - name: Create docker group
+      ansible.builtin.group:
+        name: "{{ docker_group_name }}"
+        state: present
+
+    # Add user to docker group
+    - name: Add user to docker group
+      ansible.builtin.user:
+        name: "{{ local_user }}"
+        groups: "{{ docker_group_name }}"
+        append: true
+
+    # Ensure Docker service is enabled and started
+    - name: Ensure Docker service is enabled and started
+      ansible.builtin.systemd:
+        name: snap.docker.dockerd.service
+        enabled: true
+        state: started

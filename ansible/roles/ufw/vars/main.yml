@@ -1,0 +1,3 @@
+ufw_incoming_policy_default: 'deny'
+ufw_outgoing_policy_default: 'allow'
+ufw_logging: 'on'

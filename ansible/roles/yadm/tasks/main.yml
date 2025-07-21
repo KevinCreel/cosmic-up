@@ -1,0 +1,28 @@
+- name: Include vars
+  ansible.builtin.include_vars: ../vars/main.yml
+
+- name: Ensure yadm is installed
+  ansible.builtin.apt:
+    name: yadm
+    state: present
+  become: true
+
+- name: Clone yadm dotfiles repository
+  ansible.builtin.command:
+    cmd: yadm clone "{{ yadm_repo_url }}"
+  args:
+    creates: "{{ home_dir}}/.local/share/yadm/repo.git"
+  when: yadm_repo_url | default('') | length > 0
+
+- name: Run yadm bootstrap (if present)
+  ansible.builtin.command:
+    cmd: yadm bootstrap
+  args:
+    chdir: "{{ home_dir }}"
+  become: false
+  when:
+    - yadm_bootstrap | default(true)
+    - yadm_repo_url | default('') | length > 0
+  register: yadm_bootstrap_result
+  changed_when: yadm_bootstrap_result.rc == 0 and '"No bootstrap file found" not in yadm_bootstrap_result.stdout'
+  check_mode: true
