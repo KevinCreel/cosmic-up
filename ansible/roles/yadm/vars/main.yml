@@ -1,2 +1,2 @@
 yadm_repo_url: ""
-yadm_repo_dest: "{{ ansible_env.HOME }}/.local/share/yadm/repo.git"
+yadm_repo_dest: "{{ user_data_dir }}/yadm/repo.git"

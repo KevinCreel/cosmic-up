@@ -1,4 +1,3 @@
-nerd_fonts_install_dir: "{{ home_dir }}/.local/share/fonts"
 nerd_fonts_repo_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download"
 nerd_fonts_install:
   - Hack

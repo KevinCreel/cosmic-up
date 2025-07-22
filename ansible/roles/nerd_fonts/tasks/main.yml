@@ -1,14 +1,14 @@
 # Create font installation directory
 - name: Create font directory
   ansible.builtin.file:
-    path: "{{ nerd_fonts_install_dir }}"
+    path: "{{ user_fonts_dir }}"
     state: directory
     mode: '755'
 
 # Create a list of install fonts
 - name: List installed fonts
   ansible.builtin.find:
-    paths: "{{ home_dir }}/.local/share/fonts"
+    paths: "{{ user_fonts_dir }}"
     patterns: "*.ttf"
   register: found_fonts
 
@@ -34,7 +34,7 @@
 - name: Unzip nerd font
   ansible.builtin.unarchive:
     src: "/tmp/{{ item }}.zip"
-    dest: "{{ home_dir }}/.local/share/fonts"
+    dest: "{{ user_fonts_dir }}"
     remote_src: true
     mode: '644'
   when: not nerd_fonts_status[item]

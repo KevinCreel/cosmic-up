@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
-    owner: "{{ local_user }}"
-    group: "{{ local_user }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
     mode: "{{ item.mode }}"
   with_items: "{{ create_dirs_list }}"

@@ -1,6 +1,22 @@
-local_user: "{{ ansible_user_id }}"
-local_user_gid: "{{ ansible_user_gid }}"
-home_dir: "{{ lookup('env', 'HOME') }}"
-apps_dir: "{{ home_dir }}/Applications"
-config_dir: "{{ home_dir }}/.config"
-local_dir: "{{ home_dir }}/.local"
+# User directories
+user_home_dir: "{{ ansible_env.HOME }}"
+user_config_dir: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config', true) }}"
+user_data_dir: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME + '/.local/share', true) }}"
+user_cache_dir: "{{ ansible_env.XDG_CACHE_HOME | default(ansible_env.HOME + '/.cache', true) }}"
+user_apps_dir: "{{ user_home_dir }}/Applications"
+user_local_dir: "{{ user_home_dir }}/.local"
+user_fonts_dir: "{{ user_local_dir }}/share/fonts"
+
+# Enable/disable roles
+enable_host_config: true
+enable_create_dirs: true
+enable_manage_packages: true
+enable_ufw: true
+enable_nerd_fonts: true
+enable_docker: true
+enable_fish_shell: true
+enable_kickstart: false
+enable_github_cli: true
+enable_yadm: true
+enable_vimplug: true
+enable_ollama: true

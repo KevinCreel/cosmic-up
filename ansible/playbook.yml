@@ -5,43 +5,59 @@
     - name: Configure host settings
       ansible.builtin.include_role:
         name: host_config
+      when: enable_host_config
 
     - name: Create required directories
       ansible.builtin.include_role:
         name: create_dirs
+      when: enable_create_dirs
 
     - name: Manage system packages
       ansible.builtin.include_role:
         name: manage_packages
+      when: enable_manage_packages
 
     - name: Configure ufw firewall
       ansible.builtin.include_role:
         name: ufw
+      when: enable_ufw
 
     - name: Install Nerd Fonts
       ansible.builtin.include_role:
         name: nerd_fonts
+      when: enable_nerd_fonts
 
     - name: Install and configure Docker
       ansible.builtin.include_role:
         name: docker
+      when: enable_docker
 
     - name: Install and configure fish shell
       ansible.builtin.include_role:
         name: fish_shell
+      when: enable_fish_shell
 
     - name: Install Kickstart
       ansible.builtin.include_role:
         name: kickstart
+      when: enable_kickstart
 
     - name: Install GitHub CLI
       ansible.builtin.include_role:
         name: github_cli
+      when: enable_github_cli
 
     - name: Install yadm and setup dotfiles
       ansible.builtin.include_role:
         name: yadm
+      when: enable_yadm
 
     - name: Install vim-plug
       ansible.builtin.include_role:
         name: vimplug
+      when: enable_vimplug
+
+    - name: Install Ollama and Open WebUI
+      ansible.builtin.include_role:
+        name: ollama
+      when: enable_ollama

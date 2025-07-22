@@ -1,0 +1,23 @@
+- name: Check if ollama binary exists
+  ansible.builtin.stat:
+    path: /usr/local/bin/ollama
+  register: ollama_stat
+  changed_when: false
+
+- name: Download ollama install script
+  ansible.builtin.get_url:
+    url: "{{ ollama_install_url }}"
+    dest: /tmp/ollama.sh
+    mode: '755'
+  when: not ollama_stat.stat.exists
+  changed_when: false
+
+- name: Run ollama install script
+  ansible.builtin.command: /tmp/ollama.sh
+  when: not ollama_stat.stat.exists
+  changed_when: false
+
+- name: Install Open WebUI
+  community.general.pipx:
+    name: open-webui
+    state: present

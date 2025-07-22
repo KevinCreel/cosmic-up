@@ -8,36 +8,36 @@
 # Create Fish configuration directories
 - name: Create Fish config directory
   ansible.builtin.file:
-    path: "{{ home_dir }}/.config/fish"
+    path: "{{ user_config_dir }}/fish"
     state: directory
-    owner: "{{ local_user }}"
-    group: "{{ local_user_gid }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: '0755'
 
 - name: Create conf.d directory
   ansible.builtin.file:
-    path: "{{ home_dir }}/.config/fish/conf.d"
+    path: "{{ user_config_dir }}/fish/conf.d"
     state: directory
-    owner: "{{ local_user }}"
-    group: "{{ local_user_gid }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: '0755'
 
 # Copy Fish configuration files
 - name: Copy xdg.fish config
   ansible.builtin.copy:
     src: files/xdg.fish
-    dest: "{{ home_dir }}/.config/fish/conf.d/xdg.fish"
-    owner: "{{ local_user }}"
-    group: "{{ local_user_gid }}"
+    dest: "{{ user_config_dir }}/fish/conf.d/xdg.fish"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: '0644'
 
 # Create local bin directory
 - name: Create local bin directory
   ansible.builtin.file:
-    path: "{{ local_dir }}/bin"
+    path: "{{ user_local_dir }}/bin"
     state: directory
-    owner: "{{ local_user }}"
-    group: "{{ local_user_gid }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: '0755'
 
 # Find binary paths for symlinks
@@ -55,7 +55,7 @@
 - name: Create fd symlink
   ansible.builtin.file:
     src: "{{ fdfind_path.stdout }}"
-    dest: "{{ local_dir }}/bin/fd"
+    dest: "{{ user_local_dir }}/bin/fd"
     state: link
     force: false
 
@@ -63,7 +63,7 @@
 - name: Create bat symlink
   ansible.builtin.file:
     src: "{{ batcat_path.stdout }}"
-    dest: "{{ local_dir }}/bin/bat"
+    dest: "{{ user_local_dir }}/bin/bat"
     state: link
     force: false
 
@@ -91,7 +91,7 @@
 - name: Symlink fzf to local bin
   ansible.builtin.file:
     src: "/usr/bin/fzf"
-    dest: "{{ local_dir }}/bin/fzf"
+    dest: "{{ user_local_dir }}/bin/fzf"
     state: link
     force: false
   when: ansible_facts['filesystem']['/tmp/fzf/bin/fzf'] is defined or (lookup('file', '/tmp/fzf/bin/fzf', errors='ignore') != '')
@@ -106,7 +106,7 @@
 
 - name: Set Fish as default
   ansible.builtin.user:
-    name: "{{ local_user }}"
+    name: "{{ ansible_user_id }}"
     shell: "{{ fish_shell_path }}"
   become: true
   when: fish_shell_set_default_shell | bool
@@ -148,10 +148,10 @@
 # Setup Docker completions
 - name: Create completions directory
   ansible.builtin.file:
-    path: "{{ home_dir }}/.config/fish/completions"
+    path: "{{ user_config_dir }}/fish/completions"
     state: directory
-    owner: "{{ local_user }}"
-    group: "{{ local_user_gid }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: '0755'
 
 - name: Install Docker completions
@@ -162,9 +162,9 @@
 - name: Write Docker completions to file
   ansible.builtin.copy:
     content: "{{ docker_completion.stdout }}"
-    dest: "{{ home_dir }}/.config/fish/completions/docker.fish"
-    owner: "{{ local_user }}"
-    group: "{{ local_user_gid }}"
+    dest: "{{ user_config_dir }}/fish/completions/docker.fish"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: '0644'
 
 - name: Remove Fish greeting

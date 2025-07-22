@@ -64,32 +64,32 @@
 - name: Install flatpaks
   community.general.flatpak:
     name: "{{ manage_packages_flatpak.install }}"
-    state: latest
+    state: present
 
 # Remove Flatpak packages
 - name: Remove flatpaks
   community.general.flatpak:
     name: "{{ manage_packages_flatpak.remove }}"
-    state: absent
+    state: present
 
 # Install Rust/Cargo packages
 - name: Install cargo packages
   community.general.cargo:
     name: "{{ manage_packages_cargo }}"
-    state: latest
+    state: present
 
 # Install Python packages via pipx
 - name: Install pipx packages
   community.general.pipx:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items: "{{ manage_packages_pipx }}"
 
 # You can use Gear Lever (installed) for AppImage management
 - name: Download AppImages
   ansible.builtin.get_url:
     url: "{{ item }}"
-    dest: "{{ apps_dir }}/{{ item | regex_search('([^\/]+$)') }}"
+    dest: "{{ user_apps_dir }}/{{ item | regex_search('([^\/]+$)') }}"
     mode: '755'
   loop: "{{ manage_packages_appimage }}"
 

@@ -8,14 +8,14 @@
   ansible.builtin.command:
     cmd: yadm clone "{{ yadm_repo_url }}"
   args:
-    creates: "{{ home_dir }}/.local/share/yadm/repo.git"
+    creates: "{{ user_data_dir }}/yadm/repo.git"
   when: yadm_repo_url | default('') | length > 0
 
 - name: Run yadm bootstrap (if present)
   ansible.builtin.command:
     cmd: yadm bootstrap
   args:
-    chdir: "{{ home_dir }}"
+    chdir: "{{ user_home_dir }}"
   when:
     - yadm_bootstrap | default(true)
     - yadm_repo_url | default('') | length > 0

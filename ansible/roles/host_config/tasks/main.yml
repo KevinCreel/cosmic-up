@@ -20,8 +20,8 @@
 - name: Configure passwordless sudo
   become: true
   ansible.builtin.copy:
-    dest: "/etc/sudoers.d/99-{{ local_user }}-sudo-user"
-    content: "{{ local_user }} ALL=(ALL) NOPASSWD:ALL"
+    dest: "/etc/sudoers.d/99-{{ ansible_user_id }}-sudo-user"
+    content: "{{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL"
     mode: '440'
     validate: "/usr/sbin/visudo --check --file=%s"
   when: host_config_passwordless_sudo

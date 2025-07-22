@@ -1,12 +1,12 @@
 - name: Ensure .vim/autoload directory exists
   ansible.builtin.file:
-    path: "{{ home_dir }}/.vim/autoload"
+    path: "{{ user_home_dir }}/.vim/autoload"
     state: directory
     mode: '755'
 
 - name: Ensure vim-plug is installed for the current user
   ansible.builtin.get_url:
     url: "{{ vimplug_repo_url }}"
-    dest: "{{ home_dir }}/.vim/autoload/plug.vim"
+    dest: "{{ user_home_dir }}/.vim/autoload/plug.vim"
     mode: '644'
     force: true
