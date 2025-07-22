@@ -19,3 +19,4 @@
     clone: true
     update: true
     version: master
+  when: not (lookup('fileglob', '/home/kevin/.config/nvim/*', errors='ignore'))

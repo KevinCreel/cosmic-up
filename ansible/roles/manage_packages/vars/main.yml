@@ -35,6 +35,8 @@ manage_packages_apt:
     - zoxide
     - keychain
   remove: []
+manage_packages_deb_urls:
+  - https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_i386.deb
 manage_packages_snap:
   channel: latest/edge
   install:
@@ -51,7 +53,6 @@ manage_packages_flatpak:
     - org.signal.Signal
     - md.obsidian.Obsidian
     - com.slack.Slack
-    - com.github.finefindus.eyedropper
     - us.zoom.Zoom
     - org.kde.krita
   remove: []

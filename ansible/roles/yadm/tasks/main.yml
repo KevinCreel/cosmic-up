@@ -11,7 +11,7 @@
   ansible.builtin.command:
     cmd: yadm clone "{{ yadm_repo_url }}"
   args:
-    creates: "{{ home_dir}}/.local/share/yadm/repo.git"
+    creates: "{{ home_dir }}/.local/share/yadm/repo.git"
   when: yadm_repo_url | default('') | length > 0
 
 - name: Run yadm bootstrap (if present)
@@ -19,7 +19,6 @@
     cmd: yadm bootstrap
   args:
     chdir: "{{ home_dir }}"
-  become: false
   when:
     - yadm_bootstrap | default(true)
     - yadm_repo_url | default('') | length > 0

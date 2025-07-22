@@ -5,12 +5,37 @@
     state: directory
     mode: '755'
 
-# Download and extract Nerd Fonts
-- name: Install Nerd Fonts
+- name: List installed fonts
+  ansible.builtin.find:
+    paths: "{{ home_dir }}/.local/share/fonts"
+    patterns: "*.ttf"
+  register: found_fonts
+
+- name: Check if each nerd font is installed
+  ansible.builtin.set_fact:
+    nerd_fonts_status: >-
+      {{
+        (nerd_fonts_status | default({})) | combine({
+          item: (found_fonts.files | selectattr('path', 'search', item) | list | length > 0)
+        })
+      }}
+  loop: "{{ nerd_fonts_install }}"
+
+- name: Download and install missing nerd fonts
+  ansible.builtin.get_url:
+    url: "{{ nerd_fonts_repo_url }}/{{ item }}.zip"
+    dest: "/tmp/{{ item }}.zip"
+    mode: '644'
+  when: not nerd_fonts_status[item]
+  loop: "{{ nerd_fonts_install }}"
+
+- name: Unzip nerd font
   ansible.builtin.unarchive:
-    src: "{{ nerd_fonts_repo_url }}/{{ item }}.zip"
-    dest: "{{ nerd_fonts_install_dir }}"
+    src: "/tmp/{{ item }}.zip"
+    dest: "{{ home_dir }}/.local/share/fonts"
     remote_src: true
     mode: '644'
+  when: not nerd_fonts_status[item]
   loop: "{{ nerd_fonts_install }}"
-  notify: Refresh Font Cache
+  notify:
+    - Refresh Font Cache

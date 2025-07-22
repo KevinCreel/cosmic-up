@@ -89,10 +89,25 @@
     state: latest
   with_items: "{{ manage_packages_pipx }}"
 
-# Download AppImage files
+# You can use Gear Lever (installed) for AppImage management
 - name: Download AppImages
   ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "{{ apps_dir }}/{{ item | regex_search('([^\/]+$)') }}"
     mode: '755'
   loop: "{{ manage_packages_appimage }}"
+
+# Download and install deb packages
+- name: Download deb packages
+  ansible.builtin.get_url:
+    url: "{{ item }}"
+    dest: "/tmp/{{ item | regex_replace('^.*/', '') }}"
+    mode: '0644'
+  with_items: "{{ manage_packages_deb_urls }}"
+
+- name: Install deb packages
+  become: true
+  ansible.builtin.apt:
+    deb: "/tmp/{{ item | regex_replace('^.*/', '') }}"
+    state: present
+  with_items: "{{ manage_packages_deb_urls }}"
