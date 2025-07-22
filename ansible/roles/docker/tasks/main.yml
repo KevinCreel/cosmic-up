@@ -1,7 +1,3 @@
-# Docker installation and configuration tasks
-- name: Include vars
-  ansible.builtin.include_vars: ../vars/main.yml
-
 # Install Docker via Snap
 - name: Install Docker via Snap
   become: true

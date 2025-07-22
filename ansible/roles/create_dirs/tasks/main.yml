@@ -1,7 +1,3 @@
-# Directory creation tasks
-- name: Include vars
-  ansible.builtin.include_vars: ../vars/main.yml
-
 # Create user directories with proper permissions
 - name: Create user directories
   ansible.builtin.file:

@@ -1,7 +1,3 @@
-# Fish shell configuration and setup tasks
-- name: Include vars
-  ansible.builtin.include_vars: ../vars/main.yml
-
 # Install Fish shell
 - name: Install Fish
   ansible.builtin.apt:

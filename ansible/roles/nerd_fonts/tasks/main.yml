@@ -5,12 +5,14 @@
     state: directory
     mode: '755'
 
+# Create a list of install fonts
 - name: List installed fonts
   ansible.builtin.find:
     paths: "{{ home_dir }}/.local/share/fonts"
     patterns: "*.ttf"
   register: found_fonts
 
+# Check against the list of fonts to install
 - name: Check if each nerd font is installed
   ansible.builtin.set_fact:
     nerd_fonts_status: >-

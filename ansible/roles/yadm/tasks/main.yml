@@ -1,6 +1,3 @@
-- name: Include vars
-  ansible.builtin.include_vars: ../vars/main.yml
-
 - name: Ensure yadm is installed
   ansible.builtin.apt:
     name: yadm

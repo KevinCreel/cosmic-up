@@ -1,7 +1,3 @@
-# Package management tasks for various package managers
-- name: Include vars
-  ansible.builtin.include_vars: ../vars/main.yml
-
 # Manage APT packages (Ubuntu/Debian)
 - name: Manage apt packages
   become: true

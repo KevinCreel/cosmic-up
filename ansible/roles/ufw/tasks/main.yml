@@ -1,7 +1,3 @@
-# UFW firewall configuration tasks
-- name: Include vars
-  ansible.builtin.include_vars: ../vars/main.yml
-
 # Configure UFW firewall settings
 - name: Configure UFW
   become: true
