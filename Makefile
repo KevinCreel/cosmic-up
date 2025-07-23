@@ -9,7 +9,7 @@ PLAYBOOK_FILE := ./ansible/playbook.yml
 
 .PHONY: setup upgrade-packages ansible-setup playbook help clean clean-venv tags
 
-setup: upgrade-packages ansible-setup apply-playbook clean ## Run full setup (upgrade, ansible, playbook)
+setup: upgrade-packages ansible-setup playbook clean ## Run full setup (upgrade, ansible, playbook)
 upgrade-packages:        ## Upgrade system packages
 	@$(UPGRADE_SCRIPT)
 ansible-setup:         ## Set up Ansible and dependencies

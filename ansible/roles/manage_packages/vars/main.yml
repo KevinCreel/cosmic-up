@@ -34,9 +34,11 @@ manage_packages_apt:
     - sqlite3
     - zoxide
     - keychain
+    - tmux
   remove: []
 manage_packages_deb_urls:
   - https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_i386.deb
+  - https://dbeaver.io/files/dbeaver-ce_latest_amd64.deb
 manage_packages_snap:
   channel: latest/edge
   install:
