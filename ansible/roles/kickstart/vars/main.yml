@@ -1,0 +1,2 @@
+kickstart_repo: 'https://github.com/nvim-lua/kickstart.nvim.git'
+kickstart_nvim_config_dir: '{{ user_config_dir }}/nvim'

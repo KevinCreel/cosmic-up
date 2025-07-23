@@ -1,18 +1,18 @@
 # Create Neovim configuration directory
 - name: Create nvim config directory
   ansible.builtin.file:
-    path: "{{ user_config_dir }}/nvim"
+    path: "{{ kickstart_nvim_config_dir }}"
     state: directory
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
     mode: '700'
 
-# Clone Kickstart.nvim configuration
+# Clone Kickstart.nvim configuration if not already present
 - name: Clone kickstart.nvim
   ansible.builtin.git:
-    repo: 'https://github.com/nvim-lua/kickstart.nvim.git'
-    dest: "{{ user_config_dir }}/nvim"
+    repo: "{{ kickstart_repo }}"
+    dest: "{{ kickstart_nvim_config_dir }}"
     clone: true
     update: true
     version: master
-  when: not (lookup('fileglob', '/home/kevin/.config/nvim/*', errors='ignore'))
+  when: not (lookup('fileglob', kickstart_nvim_config_dir + '/*', errors='ignore'))

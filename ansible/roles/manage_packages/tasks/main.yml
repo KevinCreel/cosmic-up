@@ -8,7 +8,7 @@
         validate_certs: false
         repo: "{{ item }}"
         state: present
-      with_items: "{{ manage_packages_apt.ppas }}"
+      loop: "{{ manage_packages_apt.ppas }}"
 
     # Update package cache
     - name: Update cache
@@ -20,6 +20,7 @@
       ansible.builtin.apt:
         name: "{{ manage_packages_apt.install }}"
         state: present
+      when: manage_packages_apt.install | length > 0
 
     # Remove packages
     - name: Remove packages
@@ -58,7 +59,6 @@
   community.general.flatpak_remote:
     name: flathub
     state: present
-    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Manage Flatpak packages
 - name: Install flatpaks
@@ -70,7 +70,8 @@
 - name: Remove flatpaks
   community.general.flatpak:
     name: "{{ manage_packages_flatpak.remove }}"
-    state: present
+    state: absent
+  when: manage_packages_flatpak.remove | length > 0
 
 # Install Rust/Cargo packages
 - name: Install cargo packages
@@ -89,7 +90,7 @@
 - name: Download AppImages
   ansible.builtin.get_url:
     url: "{{ item }}"
-    dest: "{{ user_apps_dir }}/{{ item | regex_search('([^\/]+$)') }}"
+    dest: "{{ user_apps_dir }}/{{ item | basename }}"
     mode: '700'
   loop: "{{ manage_packages_appimage }}"
 
@@ -99,7 +100,13 @@
     url: "{{ item }}"
     dest: "{{ tmp_downloads_dir }}/{{ item | regex_replace('^.*/', '') }}"
     mode: '644'
-  with_items: "{{ manage_packages_deb_urls }}"
+  register: deb_download_result
+  retries: 3
+  delay: 10
+  until: deb_download_result is succeeded
+  loop: "{{ manage_packages_deb_urls }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: Install deb packages
   become: true

@@ -1,6 +1,20 @@
+# User and group for Fish shell configuration
+fish_shell_user: "{{ ansible_user_id }}"  # Default to the user running Ansible
+fish_shell_group: "{{ ansible_user_gid }}" # Default to the user's primary group
+
+# XDG config and bin directories
+fish_shell_config_dir: "{{ lookup('env', 'HOME') }}/.config/fish"
+fish_shell_local_bin: "{{ lookup('env', 'HOME') }}/.local/bin"
+fish_shell_tmp_downloads: "/tmp"
+
+# Fisher install URL
 fish_shell_fisher_install_url: https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish
+
+# Default shell settings
 fish_shell_set_default_shell: true
 fish_shell_path: /usr/bin/fish
+
+# Fisher plugins
 fish_shell_fisher_plugins:
   - jorgebucaran/nvm.fish
   - PatrickF1/fzf.fish
@@ -9,6 +23,8 @@ fish_shell_fisher_plugins:
   - kidonng/zoxide.fish
   - IlanCosman/tide@v6
   - jorgebucaran/autopair.fish
+
+# Additional paths to add to fish_user_paths
 fish_shell_add_paths:
-  - ~/.cargo/bin
-  - ~/.local/bin
+  - "{{ lookup('env', 'HOME') }}/.cargo/bin"
+  - "{{ lookup('env', 'HOME') }}/.local/bin"

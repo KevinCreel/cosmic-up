@@ -1,6 +1,7 @@
 - name: Check if ollama binary exists
-  ansible.builtin.command: which ollama
-  register: ollama_check
+  ansible.builtin.stat:
+    path: /usr/local/bin/ollama
+  register: ollama_stat
   changed_when: false
   failed_when: false
 
@@ -9,12 +10,12 @@
     url: "{{ ollama_install_url }}"
     dest: "{{ tmp_downloads_dir }}/ollama.sh"
     mode: '700'
-  when: ollama_check.rc != 0
+  when: not ollama_stat.stat.exists
   changed_when: false
 
 - name: Run ollama install script
   ansible.builtin.command: "{{ tmp_downloads_dir }}/ollama.sh"
-  when: ollama_check.rc != 0
+  when: not ollama_stat.stat.exists
   changed_when: false
 
 - name: Install Open WebUI

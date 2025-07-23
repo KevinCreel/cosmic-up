@@ -1,5 +1,7 @@
 # Cosmic Up
 
+[![License: WTFPL](https://img.shields.io/badge/License-WTFPL-brightgreen.svg)](http://www.wtfpl.net/about/)
+
 A robust, automated starting point for a [Cosmic](https://system76.com/cosmic) based development environment.
 
 ---
@@ -73,13 +75,34 @@ Whether you're:
 
 ### Main Makefile Targets
 
-- `make provision` – Full setup: upgrade, ansible, playbook (recommended)
-- `make upgrade` – Upgrade system packages only
-- `make ansible` – Set up Ansible and dependencies only
-- `make run` – Run the Ansible playbook only
+- `make` – Full setup: upgrade, ansible, playbook (recommended)
+- `make playbook` – Run the Ansible playbook only (all enabled roles)
+- `make playbook EXTRA_ARGS="--tags fish_shell"` – Run only the `fish_shell` role
+- `make playbook EXTRA_ARGS="--tags ufw,github_cli"` – Run only the `ufw` and `github_cli` roles
+- `make tags` – List all available Ansible tags in the playbook (one per line)
+- `make upgrade-packages` – Upgrade system packages only
+- `make ansible-setup` – Set up Ansible and dependencies only
 - `make clean` – Clean up temporary files and Ansible artifacts
 - `make clean-venv` – Remove the Ansible Python virtual environment
-- `make help` – Show all available targets and descriptions
+- `make help` – Show all available targets and descriptions (with colorized examples)
+
+#### Example: Full Setup (default)
+
+```sh
+make
+```
+
+#### Example: List all available tags
+
+```sh
+make tags
+```
+
+#### Example: Run only the fish_shell and github_cli roles
+
+```sh
+make playbook EXTRA_ARGS="--tags fish_shell,github_cli"
+```
 
 ---
 
@@ -170,3 +193,12 @@ Thanks to the System76 Cosmic/Pop!_OS team, the Ansible community, package maint
 Special thanks for inspiration and code snippets:
 
 - [Jeff Geerling's mac-dev-playbook](https://github.com/geerlingguy/mac-dev-playbook)
+
+---
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome!  
+Feel free to fork the repo and submit a pull request.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

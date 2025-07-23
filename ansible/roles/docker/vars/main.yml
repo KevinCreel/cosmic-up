@@ -1,2 +1,3 @@
-docker_snap_channel: latest/edge
 docker_group_name: docker
+docker_user: "{{ ansible_user_id }}"
+docker_snap_channel: stable

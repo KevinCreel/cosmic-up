@@ -21,4 +21,3 @@
     - yadm_repo_url | default('') | length > 0
   register: yadm_bootstrap_result
   changed_when: yadm_bootstrap_result.rc == 0 and '"No bootstrap file found" not in yadm_bootstrap_result.stdout'
-  check_mode: true

@@ -27,58 +27,70 @@
       ansible.builtin.include_role:
         name: host_config
       when: enable_host_config
+      tags: [host_config]
 
     - name: Create User specified directories
       ansible.builtin.include_role:
         name: create_dirs
       when: enable_create_dirs
+      tags: [create_dirs, dirs]
 
     - name: Manage system packages
       ansible.builtin.include_role:
         name: manage_packages
       when: enable_manage_packages
+      tags: [manage_packages, packages]
 
     - name: Configure ufw firewall
       ansible.builtin.include_role:
         name: ufw
       when: enable_ufw
+      tags: [ufw, firewall]
 
     - name: Install Nerd Fonts
       ansible.builtin.include_role:
         name: nerd_fonts
       when: enable_nerd_fonts
+      tags: [nerd_fonts, fonts]
 
     - name: Install and configure Docker
       ansible.builtin.include_role:
         name: docker
       when: enable_docker
+      tags: [docker]
 
     - name: Install and configure fish shell
       ansible.builtin.include_role:
         name: fish_shell
       when: enable_fish_shell
+      tags: [fish_shell, fish]
 
     - name: Install Kickstart
       ansible.builtin.include_role:
         name: kickstart
       when: enable_kickstart
+      tags: [kickstart, nvim]
 
     - name: Install GitHub CLI
       ansible.builtin.include_role:
         name: github_cli
       when: enable_github_cli
+      tags: [github_cli, github]
 
     - name: Install yadm and setup dotfiles
       ansible.builtin.include_role:
         name: yadm
       when: enable_yadm
+      tags: [yadm, dotfiles]
 
     - name: Install vim-plug
       ansible.builtin.include_role:
         name: vimplug
       when: enable_vimplug
+      tags: [vimplug]
 
     - name: Install Ollama and Open WebUI
       ansible.builtin.include_role:
         name: ollama
       when: enable_ollama
+      tags: [ollama]

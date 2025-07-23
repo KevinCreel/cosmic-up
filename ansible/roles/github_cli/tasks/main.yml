@@ -8,19 +8,16 @@
         url: "{{ github_cli_keyring_url }}"
         state: present
 
-    # Add GitHub CLI repository
     - name: Add repository
       ansible.builtin.apt_repository:
-        repo: "deb [arch=amd64] {{ github_cli_repo }} stable main"
+        repo: "deb [arch={{ github_cli_arch | default('amd64') }}] {{ github_cli_repo }} stable main"
         state: present
         filename: github-cli
 
-    # Update package cache
     - name: Update cache
       ansible.builtin.apt:
         update_cache: true
 
-    # Install GitHub CLI package
     - name: Install gh CLI
       ansible.builtin.apt:
         name: gh

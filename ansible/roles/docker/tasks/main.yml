@@ -1,5 +1,5 @@
-# Install Docker via Snap
-- name: Install Docker via Snap
+# This role installs Docker via Snap and configures user access.
+- name: Install and configure Docker via Snap
   become: true
   block:
     # Ensure snapd is installed
@@ -16,15 +16,15 @@
         state: present
 
     # Create docker group for user access
-    - name: Create docker group
+    - name: Ensure docker group exists
       ansible.builtin.group:
         name: "{{ docker_group_name }}"
         state: present
 
-    # Add user to docker group
+    # Add user to docker group for non-root Docker usage
     - name: Add user to docker group
       ansible.builtin.user:
-        name: "{{ ansible_user_id }}"
+        name: "{{ docker_user }}"
         groups: "{{ docker_group_name }}"
         append: true
 

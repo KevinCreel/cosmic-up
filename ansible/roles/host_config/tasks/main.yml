@@ -14,7 +14,7 @@
   community.general.locale_gen:
     name: "{{ item }}"
     state: present
-  with_items: "{{ host_config_locales }}"
+  loop: "{{ host_config_locales }}"
 
 # Configure passwordless sudo for user (optional)
 - name: Configure passwordless sudo

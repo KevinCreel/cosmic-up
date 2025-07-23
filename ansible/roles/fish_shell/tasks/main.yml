@@ -1,151 +1,160 @@
-# Install Fish shell
-- name: Install Fish
+# This role installs and configures the Fish shell for a user.
+- name: Ensure Fish is installed
   ansible.builtin.apt:
     name: fish
     state: present
   become: true
+  tags:
+    - fish
 
-# Create Fish configuration directories
-- name: Create Fish config directory
+- name: Ensure Fish config directories exist
   ansible.builtin.file:
-    path: "{{ user_config_dir }}/fish"
+    path: "{{ item.path }}"
     state: directory
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
-    mode: '700'
+    owner: "{{ fish_shell_user }}"
+    group: "{{ fish_shell_group }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { path: "{{ fish_shell_config_dir }}", mode: '700' }
+    - { path: "{{ fish_shell_config_dir }}/conf.d", mode: '700' }
+    - { path: "{{ fish_shell_config_dir }}/completions", mode: '700' }
+  tags:
+    - fish
+    - config
 
-- name: Create conf.d directory
-  ansible.builtin.file:
-    path: "{{ user_config_dir }}/fish/conf.d"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
-    mode: '700'
-
-# Copy Fish configuration files
 - name: Copy xdg.fish config
   ansible.builtin.copy:
     src: files/xdg.fish
-    dest: "{{ user_config_dir }}/fish/conf.d/xdg.fish"
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
+    dest: "{{ fish_shell_config_dir }}/conf.d/xdg.fish"
+    owner: "{{ fish_shell_user }}"
+    group: "{{ fish_shell_group }}"
     mode: '600'
 
-# Create local bin directory
-- name: Create local bin directory
+- name: Ensure local bin directory exists
   ansible.builtin.file:
-    path: "{{ user_local_dir }}/bin"
+    path: "{{ fish_shell_local_bin }}"
     state: directory
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
+    owner: "{{ fish_shell_user }}"
+    group: "{{ fish_shell_group }}"
     mode: '755'
 
-# Find binary paths for symlinks
-- name: Find fdfind binary pathsd
-  ansible.builtin.command: "which fdfind"
-  register: fdfind_path
-  changed_when: false
+# Symlink fd and bat if available
+- name: Check for fdfind binary
+  ansible.builtin.stat:
+    path: /usr/bin/fdfind
+  register: fdfind_stat
 
-- name: Find batcat binary path
-  ansible.builtin.command: "which batcat"
-  register: batcat_path
-  changed_when: false
-
-# Create symlinks for fd
-- name: Create fd symlink
+- name: Create fd symlink if fdfind exists
   ansible.builtin.file:
-    src: "{{ fdfind_path.stdout }}"
-    dest: "{{ user_local_dir }}/bin/fd"
+    src: /usr/bin/fdfind
+    dest: "{{ fish_shell_local_bin }}/fd"
     state: link
-    force: false
+    force: true
+  when: fdfind_stat.stat.exists
 
-# Create symlink for batcat
-- name: Create bat symlink
+- name: Check for batcat binary
+  ansible.builtin.stat:
+    path: /usr/bin/batcat
+  register: batcat_stat
+
+- name: Create bat symlink if batcat exists
   ansible.builtin.file:
-    src: "{{ batcat_path.stdout }}"
-    dest: "{{ user_local_dir }}/bin/bat"
+    src: /usr/bin/batcat
+    dest: "{{ fish_shell_local_bin }}/bat"
     state: link
-    force: false
+    force: true
+  when: batcat_stat.stat.exists
 
-# Install FZF fuzzy finder
+# FZF installation (only if not present)
 - name: Check if fzf is installed
-  ansible.builtin.command: which fzf
-  register: fzf_check
-  changed_when: false
-  failed_when: false
+  ansible.builtin.stat:
+    path: /usr/bin/fzf
+  register: fzf_stat
 
-- name: Clone fzf repository
+- name: Clone fzf repository if not installed
   ansible.builtin.git:
     repo: 'https://github.com/junegunn/fzf.git'
-    dest: "{{ tmp_downloads_dir }}/fzf"
+    dest: "{{ fish_shell_tmp_downloads }}/fzf"
     version: master
-  when: fzf_check.rc != 0
+  when: not fzf_stat.stat.exists
 
-- name: Install fzf
-  ansible.builtin.command: "{{ tmp_downloads_dir }}/fzf/install --no-key-bindings --no-completion --no-update-rc --bin"
+- name: Install fzf if not installed
+  ansible.builtin.command: "{{ fish_shell_tmp_downloads }}/fzf/install --no-key-bindings --no-completion --no-update-rc --bin"
   args:
-    chdir: "{{ tmp_downloads_dir }}/fzf"
-    creates: "{{ tmp_downloads_dir }}/fzf/bin/fzf"
-  when: fzf_check.rc != 0
+    chdir: "{{ fish_shell_tmp_downloads }}/fzf"
+    creates: "{{ fish_shell_tmp_downloads }}/fzf/bin/fzf"
+  when: not fzf_stat.stat.exists
 
-- name: Copy fzf binary to local bin
+- name: Copy fzf binary to /usr/bin if not installed
   become: true
   ansible.builtin.copy:
-    src: "{{ tmp_downloads_dir }}/fzf/bin/fzf"
+    src: "{{ fish_shell_tmp_downloads }}/fzf/bin/fzf"
     dest: "/usr/bin/fzf"
     mode: '755'
     remote_src: true
-  when: fzf_check.rc != 0
+  when: not fzf_stat.stat.exists
 
 - name: Symlink fzf to local bin
   ansible.builtin.file:
     src: "/usr/bin/fzf"
-    dest: "{{ user_local_dir }}/bin/fzf"
+    dest: "{{ fish_shell_local_bin }}/fzf"
     state: link
-    force: false
-  when: fzf_check.rc == 0
+    force: true
+  when: fzf_stat.stat.exists or (not fzf_stat.stat.exists)
 
-# Configure Fish as default shell
-- name: Add Fish to shells
+# Set Fish as default shell (optional)
+- name: Add Fish to /etc/shells
   ansible.builtin.lineinfile:
     path: /etc/shells
     line: "{{ fish_shell_path }}"
     state: present
   become: true
 
-- name: Set Fish as default
+- name: Set Fish as default shell for user
   ansible.builtin.user:
-    name: "{{ ansible_user_id }}"
+    name: "{{ fish_shell_user }}"
     shell: "{{ fish_shell_path }}"
   become: true
   when: fish_shell_set_default_shell | bool
 
-# Install Fisher package manager
+# Fisher package manager and plugins
+- name: Check if Fisher is installed
+  ansible.builtin.command: "{{ fish_shell_path }} -c type -q fisher"
+  register: fisher_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if Fisher function file exists
+  ansible.builtin.stat:
+    path: "{{ fish_shell_config_dir }}/functions/fisher.fish"
+  register: fisher_function_file
+
 - name: Download Fisher installer
   ansible.builtin.get_url:
     url: "{{ fish_shell_fisher_install_url }}"
-    dest: "{{ tmp_downloads_dir }}/fisher.fish"
+    dest: "{{ fish_shell_tmp_downloads }}/fisher.fish"
     mode: '700'
+  when: not fisher_function_file.stat.exists
 
 - name: Install Fisher
   ansible.builtin.shell: |
-    source "{{ tmp_downloads_dir }}/fisher.fish"
+    source "{{ fish_shell_tmp_downloads }}/fisher.fish"
     fisher install jorgebucaran/fisher
   args:
     executable: "{{ fish_shell_path }}"
   changed_when: false
+  when: not fisher_function_file.stat.exists
 
-# Install Fisher plugins
-- name: Install Fisher plugins
-  ansible.builtin.shell: "fisher install {{ item }}"
-  args:
-    executable: "{{ fish_shell_path }}"
+- name: Ensure Fisher plugins are installed
+  ansible.builtin.include_tasks: install_fisher_plugin.yml
+  vars:
+    fisher_plugin: "{{ item }}"
   loop: "{{ fish_shell_fisher_plugins }}"
-  changed_when: false
-  failed_when: false
+  loop_control:
+    label: "{{ item }}"
 
 # Add custom paths to Fish
-- name: Add custom paths
+- name: Add custom paths to Fish
   ansible.builtin.shell: "fish_add_path {{ item }}"
   register: fish_add_path_result
   args:
@@ -154,28 +163,23 @@
   changed_when: false
   failed_when: false
 
-# Setup Docker completions
-- name: Create completions directory
-  ansible.builtin.file:
-    path: "{{ user_config_dir }}/fish/completions"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
-    mode: '700'
-
-- name: Install Docker completions
+# Docker completions
+- name: Install Docker completions if docker is present
   ansible.builtin.command: docker completion fish
   register: docker_completion
   changed_when: false
+  failed_when: false
 
 - name: Write Docker completions to file
   ansible.builtin.copy:
     content: "{{ docker_completion.stdout }}"
-    dest: "{{ user_config_dir }}/fish/completions/docker.fish"
-    owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_gid }}"
+    dest: "{{ fish_shell_config_dir }}/completions/docker.fish"
+    owner: "{{ fish_shell_user }}"
+    group: "{{ fish_shell_group }}"
     mode: '644'
+  when: docker_completion.stdout is defined and docker_completion.stdout|length > 0
 
+# Remove Fish greeting
 - name: Remove Fish greeting
   ansible.builtin.shell: "set -U fish_greeting"
   args:
