@@ -20,3 +20,9 @@ enable_github_cli: true
 enable_yadm: true
 enable_vimplug: true
 enable_ollama: true
+
+# Temporary directories
+tmp_dir: "/tmp/cosmic-up"
+tmp_downloads_dir: "{{ tmp_dir }}/downloads"
+tmp_builds_dir: "{{ tmp_dir }}/builds"
+tmp_extracts_dir: "{{ tmp_dir }}/extracts"

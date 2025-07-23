@@ -199,15 +199,9 @@ upgrade_system_packages() {
     
     # Perform distribution upgrade
     log_debug "Performing distribution upgrade..."
-    if ! sudo apt-get dist-upgrade -y; then
+    if ! sudo apt-get --auto-remove full-upgrade -y; then
         log_error "Failed to perform distribution upgrade"
         return 1
-    fi
-    
-    # Remove unnecessary packages
-    log_debug "Removing unnecessary packages..."
-    if ! sudo apt autoremove -y; then
-        log_warning "Failed to remove unnecessary packages (non-critical)"
     fi
     
     # Check if reboot is required

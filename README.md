@@ -23,13 +23,13 @@ Whether you're:
 
 ## Features
 
-- Idempotent and repeatable provisioning
-- Easily extensible for your own tools and preferences
-- Automated [Fish shell](https://fishshell.com) setup with [fzf](https://github.com/junegunn/fzf), [tide prompt](https://github.com/IlanCosman/tide), [fd](https://github.com/sharkdp/fd), [autopair](https://github.com/jorgebucaran/autopair.fish), [extra themes](https://github.com/mattmc3/themepak.fish) and more!
-- Editors: [VSCode](https://code.visualstudio.com), [Cursor](https://cursor.com), [NeoVim](https://neovim.io)
-- Installs and configures [Docker](https://www.docker.com), [Node.js](https://nodejs.org) (via [nvm](https://github.com/nvm-sh/nvm)), and other developer tools
-- Customizable package and font management
-- Dotfile management with [yadm](https://yadm.io)
+- Safe, repeatable provisioning (run `make` any time)
+- Automated system upgrades before provisioning
+- Easily extensible and configurable
+- Automated [Fish shell](https://fishshell.com) customization with plugins, themes, and productivity tools
+- Support for local LLMs ([Ollama](https://ollama.com/), [Open WebUI](https://docs.openwebui.com/))
+- Pre-configured developer tools: [VSCode](https://code.visualstudio.com), [Cursor](https://cursor.com), [NeoVim](https://neovim.io), [Docker](https://www.docker.com), [Node.js](https://nodejs.org) (via [nvm](https://github.com/nvm-sh/nvm)), and more
+- Dotfile bootstrapping with [yadm](https://yadm.io)
 
 ---
 
@@ -50,46 +50,106 @@ Whether you're:
 3. **Customize**: Edit Ansible variables to suit your preferences (see below)
 4. **Commit your changes**: Commit your changes and push to your fork
 5. **Clone your fork** onto your fresh Cosmic install
-6. **Run**:
+6. **Run the full setup:**
 
    ```sh
-   make all
+   make
    ```
 
-7. **Reboot** if prompted, then run `make all` again to complete setup
+   This will:
+   - Upgrade system packages
+   - Set up Ansible in a Python virtual environment
+   - Run the Ansible playbook to configure your system
 
-> **Tip:** Ansible is installed and run via [python venv](https://docs.python.org/3/library/venv.html)
+7. **Reboot** if prompted (the upgrade step may require it). After rebooting, run:
+
+   ```sh
+   make
+   ```
+
+   again to complete the setup.
+
+> **Tip:** Use `make help` to see all available commands and what they do.
+
+### Main Makefile Targets
+
+- `make provision` – Full setup: upgrade, ansible, playbook (recommended)
+- `make upgrade` – Upgrade system packages only
+- `make ansible` – Set up Ansible and dependencies only
+- `make run` – Run the Ansible playbook only
+- `make clean` – Clean up temporary files and Ansible artifacts
+- `make clean-venv` – Remove the Ansible Python virtual environment
+- `make help` – Show all available targets and descriptions
 
 ---
 
 ## Configuration
 
-All settings are managed via Ansible variables. Key files to review:
+All settings are managed via Ansible variables, allowing you to fully customize your setup. The most important file is:
 
-- **OS Settings**: [`ansible/roles/host_config/vars/main.yml`](ansible/roles/host_config/vars/main.yml)
-- **Packages**: [`ansible/roles/manage_packages/vars/main.yml`](ansible/roles/manage_packages/vars/main.yml)
-- **Fonts**: [`ansible/roles/nerd_fonts/vars/main.yml`](ansible/roles/nerd_fonts/vars/main.yml)
-- **Dotfiles** [`ansible/roles/yadm/vars/main.yml`](ansible/roles/yadm/vars/main.yml)
+- [`ansible/group_vars/all.yml`](ansible/group_vars/all.yml): **Enable or disable major features and roles.**
+
+Other key files for fine-tuning:
+
+- **OS Settings:** [`ansible/roles/host_config/vars/main.yml`](ansible/roles/host_config/vars/main.yml)
+- **Packages:** [`ansible/roles/manage_packages/vars/main.yml`](ansible/roles/manage_packages/vars/main.yml)
+- **Fonts:** [`ansible/roles/nerd_fonts/vars/main.yml`](ansible/roles/nerd_fonts/vars/main.yml)
+- **Dotfiles:** [`ansible/roles/yadm/vars/main.yml`](ansible/roles/yadm/vars/main.yml)
 
 > **Tip:** At minimum, set your locale, timezone, and hostname in the [Host Config File](ansible/roles/host_config/vars/main.yml).
+
+### Enabling/Disabling Features
+
+You can quickly turn features on or off by editing the variables in `ansible/group_vars/all.yml`.  
+Set each feature to `true` (enable) or `false` (disable):
+
+```yaml
+# ansible/group_vars/all.yml
+
+enable_docker: true      # Install and configure Docker
+enable_nerd_fonts: false # Skip Nerd Fonts installation
+enable_ollama: true      # Install Ollama and Open WebUI
+```
+
+This makes your setup highly customizable—just edit `all.yml` before running `make`.
 
 ---
 
 ## Troubleshooting
 
-**If the install hangs/fails:**
+If you run into issues during setup, try the following steps:
 
-**Ctrl+C** to terminate the process and run the install again:
+### Common Issues & Solutions
 
-   ```sh
-   make all
-   ```
+- **Install hangs or fails:**
+  - Press `Ctrl+C` to terminate the process.
+  - Re-run the setup with:
 
-If you've made changes that are causing errors run ansible-lint
+    ```sh
+    make
+    ```
 
-   ```sh
-   ./ansible-venv/bin/ansible-lint
-   ```
+  - If prompted for a reboot, reboot your system and run `make` again.
+
+- **Ansible errors or playbook failures:**
+  - Check the error message in your terminal for details.
+  - Run the linter to check for common issues:
+
+    ```sh
+    ./ansible-venv/bin/ansible-lint
+    ```
+
+  - Make sure your Ansible variables are valid YAML and all required variables are set.
+
+- **Missing dependencies or command not found:**
+  - Ensure you are not running as root (do not use `sudo make`).
+
+- **Permission errors:**
+  - The scripts should be run as your normal user (not root).
+  - If you see permission denied errors, check file permissions and try again.
+
+- **Reboot required:**
+  - If the upgrade step prompts for a reboot, reboot your system and then re-run `make` to continue.
 
 ## Authors
 

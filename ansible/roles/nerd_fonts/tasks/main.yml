@@ -26,14 +26,14 @@
 - name: Download and install missing nerd fonts
   ansible.builtin.get_url:
     url: "{{ nerd_fonts_repo_url }}/{{ item }}.zip"
-    dest: "/tmp/{{ item }}.zip"
+    dest: "{{ tmp_downloads_dir }}/{{ item }}.zip"
     mode: '644'
   when: not nerd_fonts_status[item]
   loop: "{{ nerd_fonts_install }}"
 
 - name: Unzip nerd font
   ansible.builtin.unarchive:
-    src: "/tmp/{{ item }}.zip"
+    src: "{{ tmp_downloads_dir }}/{{ item }}.zip"
     dest: "{{ user_fonts_dir }}"
     remote_src: true
     mode: '644'

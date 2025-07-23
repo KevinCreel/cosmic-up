@@ -97,13 +97,13 @@
 - name: Download deb packages
   ansible.builtin.get_url:
     url: "{{ item }}"
-    dest: "/tmp/{{ item | regex_replace('^.*/', '') }}"
-    mode: '0644'
+    dest: "{{ tmp_downloads_dir }}/{{ item | regex_replace('^.*/', '') }}"
+    mode: '644'
   with_items: "{{ manage_packages_deb_urls }}"
 
 - name: Install deb packages
   become: true
   ansible.builtin.apt:
-    deb: "/tmp/{{ item | regex_replace('^.*/', '') }}"
+    deb: "{{ tmp_downloads_dir }}/{{ item | regex_replace('^.*/', '') }}"
     state: present
   with_items: "{{ manage_packages_deb_urls }}"

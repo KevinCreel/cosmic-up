@@ -12,7 +12,7 @@
     state: directory
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
-    mode: '0755'
+    mode: '755'
 
 - name: Create conf.d directory
   ansible.builtin.file:
@@ -20,7 +20,7 @@
     state: directory
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
-    mode: '0755'
+    mode: '755'
 
 # Copy Fish configuration files
 - name: Copy xdg.fish config
@@ -68,25 +68,34 @@
     force: false
 
 # Install FZF fuzzy finder
+- name: Check if fzf is installed
+  ansible.builtin.command: which fzf
+  register: fzf_check
+  changed_when: false
+  failed_when: false
+
 - name: Clone fzf repository
   ansible.builtin.git:
     repo: 'https://github.com/junegunn/fzf.git'
-    dest: /tmp/fzf/
+    dest: "{{ tmp_downloads_dir }}/fzf"
     version: master
+  when: fzf_check.rc != 0
 
 - name: Install fzf
-  ansible.builtin.command: "/tmp/fzf/install --no-key-bindings --no-completion --no-update-rc --bin"
+  ansible.builtin.command: "{{ tmp_downloads_dir }}/fzf/install --no-key-bindings --no-completion --no-update-rc --bin"
   args:
-    chdir: /tmp/fzf
-    creates: "/tmp/fzf/bin/fzf"
+    chdir: "{{ tmp_downloads_dir }}/fzf"
+    creates: "{{ tmp_downloads_dir }}/fzf/bin/fzf"
+  when: fzf_check.rc != 0
 
 - name: Copy fzf binary to local bin
   become: true
   ansible.builtin.copy:
-    src: "/tmp/fzf/bin/fzf"
+    src: "{{ tmp_downloads_dir }}/fzf/bin/fzf"
     dest: "/usr/bin/fzf"
     mode: '0755'
-  when: ansible_facts['filesystem']['/tmp/fzf/bin/fzf'] is defined or (lookup('file', '/tmp/fzf/bin/fzf', errors='ignore') != '')
+    remote_src: true
+  when: fzf_check.rc != 0
 
 - name: Symlink fzf to local bin
   ansible.builtin.file:
@@ -94,7 +103,7 @@
     dest: "{{ user_local_dir }}/bin/fzf"
     state: link
     force: false
-  when: ansible_facts['filesystem']['/tmp/fzf/bin/fzf'] is defined or (lookup('file', '/tmp/fzf/bin/fzf', errors='ignore') != '')
+  when: fzf_check.rc == 0
 
 # Configure Fish as default shell
 - name: Add Fish to shells
@@ -115,12 +124,12 @@
 - name: Download Fisher installer
   ansible.builtin.get_url:
     url: "{{ fish_shell_fisher_install_url }}"
-    dest: /tmp/fisher.fish
+    dest: "{{ tmp_downloads_dir }}/fisher.fish"
     mode: '0644'
 
 - name: Install Fisher
   ansible.builtin.shell: |
-    source /tmp/fisher.fish
+    source "{{ tmp_downloads_dir }}/fisher.fish"
     fisher install jorgebucaran/fisher
   args:
     executable: "{{ fish_shell_path }}"

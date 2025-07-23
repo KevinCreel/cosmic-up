@@ -2,6 +2,17 @@
 - name: Setup Cosmic OS
   hosts: localhost
   tasks:
+    - name: Create temporary directory structure
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        mode: '755'
+      loop:
+        - "{{ tmp_dir }}"
+        - "{{ tmp_downloads_dir }}"
+        - "{{ tmp_builds_dir }}"
+        - "{{ tmp_extracts_dir }}"
+
     - name: Configure host settings
       ansible.builtin.include_role:
         name: host_config
