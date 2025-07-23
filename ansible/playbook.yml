@@ -2,23 +2,33 @@
 - name: Setup Cosmic OS
   hosts: localhost
   tasks:
-    - name: Create temporary directory structure
+    - name: Create temporary and user directory structure
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        mode: '755'
+        mode: '700'
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_gid }}"
       loop:
+        # Temporary directories
         - "{{ tmp_dir }}"
         - "{{ tmp_downloads_dir }}"
         - "{{ tmp_builds_dir }}"
         - "{{ tmp_extracts_dir }}"
+        # User directories
+        - "{{ user_local_dir }}"
+        - "{{ user_config_dir }}"
+        - "{{ user_data_dir }}"
+        - "{{ user_cache_dir }}"
+        - "{{ user_apps_dir }}"
+        - "{{ user_fonts_dir }}"
 
     - name: Configure host settings
       ansible.builtin.include_role:
         name: host_config
       when: enable_host_config
 
-    - name: Create required directories
+    - name: Create User specified directories
       ansible.builtin.include_role:
         name: create_dirs
       when: enable_create_dirs

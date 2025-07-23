@@ -90,7 +90,7 @@
   ansible.builtin.get_url:
     url: "{{ item }}"
     dest: "{{ user_apps_dir }}/{{ item | regex_search('([^\/]+$)') }}"
-    mode: '755'
+    mode: '700'
   loop: "{{ manage_packages_appimage }}"
 
 # Download and install deb packages

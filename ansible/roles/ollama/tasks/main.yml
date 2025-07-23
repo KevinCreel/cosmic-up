@@ -8,7 +8,7 @@
   ansible.builtin.get_url:
     url: "{{ ollama_install_url }}"
     dest: "{{ tmp_downloads_dir }}/ollama.sh"
-    mode: '755'
+    mode: '700'
   when: ollama_check.rc != 0
   changed_when: false
 

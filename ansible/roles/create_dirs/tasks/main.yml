@@ -4,6 +4,6 @@
     path: "{{ item.path }}"
     state: directory
     owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_gid }}"
     mode: "{{ item.mode }}"
   with_items: "{{ create_dirs_list }}"

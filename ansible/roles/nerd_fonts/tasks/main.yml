@@ -3,7 +3,7 @@
   ansible.builtin.file:
     path: "{{ user_fonts_dir }}"
     state: directory
-    mode: '755'
+    mode: '700'
 
 # Create a list of install fonts
 - name: List installed fonts
@@ -27,7 +27,7 @@
   ansible.builtin.get_url:
     url: "{{ nerd_fonts_repo_url }}/{{ item }}.zip"
     dest: "{{ tmp_downloads_dir }}/{{ item }}.zip"
-    mode: '644'
+    mode: '600'
   when: not nerd_fonts_status[item]
   loop: "{{ nerd_fonts_install }}"
 
