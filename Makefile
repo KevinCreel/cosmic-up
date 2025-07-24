@@ -7,7 +7,7 @@ ANSIBLE_SETUP_SCRIPT := ./scripts/setup_ansible.sh
 PLAYBOOK_SCRIPT := ./scripts/run_playbook.sh
 PLAYBOOK_FILE := ./ansible/playbook.yml
 
-.PHONY: setup upgrade-packages ansible-setup playbook help clean clean-venv tags
+.PHONY: setup upgrade-packages ansible-setup playbook help clean clean-venv tags list-tags
 
 setup: upgrade-packages ansible-setup playbook clean ## Run full setup (upgrade, ansible, playbook)
 upgrade-packages:        ## Upgrade system packages
@@ -26,8 +26,8 @@ help:                    ## Show this help message
 	@printf "Examples:\n"
 	@printf "  \033[0;32mmake\033[0m                                              \033[0;33m# Run full setup\033[0m\n"
 	@printf "  \033[0;32mmake playbook\033[0m                                     \033[0;33m# Run all roles (no tags)\033[0m\n"
-	@printf "  \033[0;32mmake playbook EXTRA_ARGS=\"--tags fish_shell\"\033[0m      \033[0;33m# Run only the fish_shell role\033[0m\n"
-	@printf "  \033[0;32mmake playbook EXTRA_ARGS=\"--tags ufw,github_cli\"\033[0m  \033[0;33m# Run only ufw and github_cli roles\033[0m\n"
+	@printf "  \033[0;32mmake playbook EXTRA_ARGS=\"--tags docker\"\033[0m          \033[0;33m# Run only the docker role\033[0m\n"
+	@printf "  \033[0;32mmake playbook EXTRA_ARGS=\"--tags docker,packages\"\033[0m \033[0;33m# Run docker and packages roles\033[0m\n"
 clean:                   ## Clean up temporary files and Ansible artifacts
 	@printf "\n"
 	@printf "Cleaning up temporary files and Ansible artifacts...\n"
@@ -42,9 +42,13 @@ clean-venv:                   ## Clean up virtual environment
 	@rm -rf ansible-venv 2>/dev/null || true
 	@printf "Cleanup complete.\n"
 tags:        ## List all available Ansible tags in the playbook (just the tags)
+	@printf "\n\033[1;34mAvailable Ansible Tags:\033[0m\n"
+	@echo "------------------------"
 	@$(PLAYBOOK_SCRIPT) $(PLAYBOOK_FILE) --list-tags | \
 	grep 'TASK TAGS:' | \
 	sed -E 's/.*TASK TAGS: \[(.*)\]/\1/' | \
 	tr ',' '\n' | \
-	sed 's/^[[:space:]]*//;s/[[:space:]]*$$//' | \
-	sort -u	
+	sed '/^$$/d; s/^[[:space:]]*//;s/[[:space:]]*$$//' | \
+	sort -u | \
+	awk '{if($$0 != "") printf "  \033[1;32m•\033[0m %s\n", $$0}'
+	@echo "------------------------"

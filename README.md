@@ -78,8 +78,8 @@ Whether you're:
 
 - `make` – Full setup: upgrade, ansible, playbook (recommended)
 - `make playbook` – Run the Ansible playbook only (all enabled roles)
-- `make playbook EXTRA_ARGS="--tags fish_shell"` – Run only the `fish_shell` role
-- `make playbook EXTRA_ARGS="--tags ufw,github_cli"` – Run only the `ufw` and `github_cli` roles
+- `make playbook EXTRA_ARGS="--tags docker"` – Run only the `docker` role
+- `make playbook EXTRA_ARGS="--tags docker,packages"` – Run `docker` and `packages` roles
 - `make tags` – List all available Ansible tags in the playbook (one per line)
 - `make upgrade-packages` – Upgrade system packages only
 - `make ansible-setup` – Set up Ansible and dependencies only
@@ -99,10 +99,10 @@ make
 make tags
 ```
 
-#### Example: Run only the fish_shell and github_cli roles
+#### Example: Run only the fish and github_cli roles
 
 ```sh
-make playbook EXTRA_ARGS="--tags fish_shell,github_cli"
+make playbook EXTRA_ARGS="--tags fish,github_cli"
 ```
 
 ---
@@ -127,8 +127,9 @@ ansible/group_vars/all.yml
 
 ```yaml
 # Enable or disable roles
-enable_docker: true
-enable_ufw: true
+enabled_roles:
+  enable_docker: true
+  enable_ufw: true
 
 # Set your timezone and hostname
 timezone: America/New_York
