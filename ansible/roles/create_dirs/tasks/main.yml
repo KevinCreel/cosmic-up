@@ -1,9 +1,9 @@
 # Create user directories with proper permissions
-- name: Create user directories
+- name: Create temporary and user directory structure
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory
+    mode: "{{ item.mode }}"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
-    mode: "{{ item.mode }}"
-  with_items: "{{ create_dirs_list }}"
+  loop: "{{ create_dirs_list }}"

@@ -16,6 +16,8 @@ enable_yadm: true
 enable_vimplug: true
 enable_ollama: true
 enable_ripgrep_all: true
+enable_lazygit: true
+enable_lazydocker: true
 
 # User directories (customize if needed)
 user_apps_dir: "{{ user_home_dir }}/Applications"

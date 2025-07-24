@@ -3,25 +3,10 @@
   hosts: localhost
   tasks:
     - name: Create temporary and user directory structure
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-        mode: '700'
-        owner: "{{ ansible_user_id }}"
-        group: "{{ ansible_user_gid }}"
-      loop:
-        # Temporary directories
-        - "{{ tmp_dir }}"
-        - "{{ tmp_downloads_dir }}"
-        - "{{ tmp_builds_dir }}"
-        - "{{ tmp_extracts_dir }}"
-        # User directories
-        - "{{ user_local_dir }}"
-        - "{{ user_config_dir }}"
-        - "{{ user_data_dir }}"
-        - "{{ user_cache_dir }}"
-        - "{{ user_apps_dir }}"
-        - "{{ user_fonts_dir }}"
+      ansible.builtin.include_role:
+        name: create_dirs
+        apply:
+          tags: [always]
       tags: [always]
 
     - name: Configure host settings
@@ -31,14 +16,6 @@
           tags: [host-config]
       when: enable_host_config
       tags: [host-config]
-
-    - name: Create User specified directories
-      ansible.builtin.include_role:
-        name: create_dirs
-        apply:
-          tags: [create-dirs]
-      when: enable_create_dirs
-      tags: [create-dirs]
 
     - name: Manage system packages
       ansible.builtin.include_role:
@@ -127,3 +104,19 @@
           tags: [ripgrep-all]
       when: enable_ripgrep_all
       tags: [ripgrep-all]
+
+    - name: Install lazygit
+      ansible.builtin.include_role:
+        name: lazygit
+        apply:
+          tags: [lazygit]
+      when: enable_lazygit
+      tags: [lazygit]
+
+    - name: Install lazydocker
+      ansible.builtin.include_role:
+        name: lazydocker
+        apply:
+          tags: [lazydocker]
+      when: enable_lazydocker
+      tags: [lazydocker]

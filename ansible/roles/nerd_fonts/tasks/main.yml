@@ -1,10 +1,3 @@
-# Create font installation directory
-- name: Create font directory
-  ansible.builtin.file:
-    path: "{{ user_fonts_dir }}"
-    state: directory
-    mode: '700'
-
 # Create a list of install fonts
 - name: List installed fonts
   ansible.builtin.find:

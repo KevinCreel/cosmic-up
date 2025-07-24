@@ -25,13 +25,14 @@ Whether you're:
 
 ## Features
 
-- Safe, repeatable provisioning (run `make` any time)
-- Automated system upgrades before provisioning
-- Easily extensible and configurable
-- Automated [Fish shell](https://fishshell.com) customization with plugins, themes, and productivity tools
-- Support for local LLMs ([Ollama](https://ollama.com/), [Open WebUI](https://docs.openwebui.com/))
-- Pre-configured developer tools: [VSCode](https://code.visualstudio.com), [Cursor](https://cursor.com), [NeoVim](https://neovim.io), [Docker](https://www.docker.com), [Node.js](https://nodejs.org) (via [nvm](https://github.com/nvm-sh/nvm)), and more
-- Dotfile bootstrapping with [yadm](https://yadm.io)
+- 🚀 One-command, idempotent setup (`make`)
+- 🛠️ Pre-installed: Editors (VSCode, Cursor, NeoVim), Containers (Docker), Productivity (lazygit, lazydocker, ripgrep-all, fd, fzf, bat, ranger-fm), Languages (Node.js, Python, Rust, Go), Nerd Fonts, and more
+- 🐟 Fish shell with plugins & themes
+- 🤖 Local LLMs: Ollama, Open WebUI
+- 🗂️ Dotfile management (yadm)
+- 🎨 Beautiful fonts & terminal
+- 🖥️ Cosmic/Pop!_OS ready
+- ⚙️ Fully customizable
 
 ---
 

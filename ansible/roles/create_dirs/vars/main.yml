@@ -1,3 +1,21 @@
 create_dirs_list:
-  - path: "{{ user_home_dir + '/.ssh/' }}"
+  - path: "{{ tmp_dir }}"
+    mode: '700'
+  - path: "{{ tmp_downloads_dir }}"
+    mode: '700'
+  - path: "{{ tmp_builds_dir }}"
+    mode: '700'
+  - path: "{{ tmp_extracts_dir }}"
+    mode: '700'
+  - path: "{{ user_local_dir }}"
+    mode: '700'
+  - path: "{{ user_config_dir }}"
+    mode: '700'
+  - path: "{{ user_data_dir }}"
+    mode: '700'
+  - path: "{{ user_cache_dir }}"
+    mode: '700'
+  - path: "{{ user_apps_dir }}"
+    mode: '700'
+  - path: "{{ user_fonts_dir }}"
     mode: '700'

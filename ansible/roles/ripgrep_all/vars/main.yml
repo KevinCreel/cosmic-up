@@ -1,4 +1,3 @@
-ripgrep_all_version: "v0.10.9"
 ripgrep_all_binaries:
   - rga
   - rga-fzf

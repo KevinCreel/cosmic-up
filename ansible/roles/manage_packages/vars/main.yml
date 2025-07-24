@@ -61,6 +61,7 @@ manage_packages_flatpak:
 manage_packages_pipx:
   - pipx
   - httpie
+  - ranger-fm
 manage_packages_cargo:
   - topgrade
 manage_packages_appimage:
