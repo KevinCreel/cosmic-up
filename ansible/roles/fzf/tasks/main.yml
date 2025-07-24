@@ -41,8 +41,16 @@
         creates: "{{ tmp_extracts_dir }}/fzf/fzf"
 
     - name: Install fzf binary to user local bin
+      become: true
       ansible.builtin.copy:
         src: "{{ tmp_extracts_dir }}/fzf/fzf"
-        dest: "{{ user_local_bin }}/fzf"
+        dest: "/usr/bin/fzf"
         mode: '755'
         remote_src: true
+
+- name: Symlink fzf binary to user local bin
+  ansible.builtin.file:
+    src: "/usr/bin/fzf"
+    dest: "{{ user_local_bin }}/fzf"
+    state: link
+    force: true

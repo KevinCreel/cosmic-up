@@ -15,7 +15,11 @@ upgrade-packages:        ## Upgrade system packages
 ansible-setup:         ## Set up Ansible and dependencies
 	@$(ANSIBLE_SETUP_SCRIPT)
 playbook:            ## Run the Ansible playbook (use EXTRA_ARGS to pass options, e.g. EXTRA_ARGS="--tags fish_shell")
-	@$(PLAYBOOK_SCRIPT) $(PLAYBOOK_FILE) $(EXTRA_ARGS)
+	@$(PLAYBOOK_SCRIPT) $(PLAYBOOK_FILE) $(EXTRA_ARGS) && \
+	printf "\n" && \
+	printf "\033[1;33m********************************************************************************\033[0m\n" && \
+	printf "\033[1;33mPlease log out and log back in, or reboot, for some changes to take effect.\033[0m\n" && \
+	printf "\033[1;33m********************************************************************************\033[0m\n"
 help:                    ## Show this help message
 	@awk 'BEGIN {FS = ":.*##"; G="\033[0;32m"; N="\033[0m"; printf "\nUsage:\n  make <target> [EXTRA_ARGS=\"--tags <tag1,tag2>\"]\n\nTargets:\n"} /^[a-zA-Z0-9_-]+:.*##/ {printf "  %s%-18s%s %s\n", G, $$1, N, $$2}' Makefile
 	@printf "\n"
@@ -33,10 +37,6 @@ clean:                   ## Clean up temporary files and Ansible artifacts
 	@rm -f ansible/hosts.ini.tmp 2>/dev/null || true
 	@rm -rf ~/.ansible 2>/dev/null || true
 	@printf "Cleanup complete.\n"
-	@printf "\n"
-	@printf "\033[1;33m********************************************************************************\033[0m\n"
-	@printf "\033[1;33mPlease log out and log back in, or reboot, for some changes to take effect.\033[0m\n"
-	@printf "\033[1;33m********************************************************************************\033[0m\n"
 clean-venv:                   ## Clean up virtual environment
 	@printf "Cleaning up virtual environment...\n"
 	@rm -rf ansible-venv 2>/dev/null || true

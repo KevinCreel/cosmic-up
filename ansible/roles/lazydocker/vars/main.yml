@@ -1,3 +1,4 @@
 lazydocker_archive: "lazydocker_{{ lazydocker_version }}_Linux_x86_64.tar.gz"
 lazydocker_extract_dir: "lazydocker_{{ lazydocker_version }}_Linux_x86_64"
 lazydocker_download_url: "https://github.com/jesseduffield/lazydocker/releases/download/v{{ lazydocker_version }}/{{ lazydocker_archive }}"
+lazydocker_latest_version_url: "https://api.github.com/repos/jesseduffield/lazydocker/releases/latest"

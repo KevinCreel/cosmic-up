@@ -1,30 +1,26 @@
-- name: Get latest lazygit version
-  ansible.builtin.uri:
-    url: https://api.github.com/repos/jesseduffield/lazygit/releases/latest
-    return_content: true
-  register: lazygit_api_response
-
-- name: Set lazygit version fact
-  ansible.builtin.set_fact:
-    lazygit_version: "{{ (lazygit_api_response.json.tag_name | regex_replace('^v', '')) }}"
-
 - name: Check if lazygit binary is already installed
   ansible.builtin.stat:
     path: "/usr/bin/lazygit"
   register: lazygit_binaries_stat
 
-- name: Set fact for whether binary exists
-  ansible.builtin.set_fact:
-    all_binaries_exist: "{{ lazygit_binaries_stat.stat.exists | default(false) }}"
-
 - name: Install lazygit if not present
-  when: not all_binaries_exist
+  when: not lazygit_binaries_stat.stat.exists
   block:
+    - name: Get latest lazygit version
+      ansible.builtin.uri:
+        url: "{{ lazygit_latest_version_url }}"
+        return_content: true
+      register: lazygit_api_response
+
+    - name: Set lazygit version fact
+      ansible.builtin.set_fact:
+        lazygit_version: "{{ lazygit_api_response.json.tag_name | regex_replace('^v', '') }}"
+
     - name: Download lazygit binary if not present
       ansible.builtin.get_url:
         url: "{{ lazygit_download_url }}"
         dest: "{{ tmp_downloads_dir }}/{{ lazygit_archive }}"
-        mode: '0644'
+        mode: '644'
 
     - name: Unarchive lazygit binary if not present
       ansible.builtin.unarchive:
@@ -40,25 +36,9 @@
         mode: '755'
         remote_src: true
 
-    - name: Verify binary is present in /usr/bin
-      ansible.builtin.stat:
-        path: "/usr/bin/lazygit"
-      register: verify_binaries
-
-    - name: Fail if binary is missing after copy
-      ansible.builtin.fail:
-        msg: "Binary lazygit was not found in /usr/bin after copy!"
-      when: not verify_binaries.stat.exists
-
-- name: Ensure ~/.local/bin exists
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/bin"
-    state: directory
-    mode: '755'
-
-- name: Symlink lazygit binary to ~/.local/bin
+- name: Symlink lazygit binary to {{ user_local_bin }}
   ansible.builtin.file:
     src: "/usr/bin/lazygit"
-    dest: "{{ ansible_env.HOME }}/.local/bin/lazygit"
+    dest: "{{ user_local_bin }}/lazygit"
     state: link
     force: true

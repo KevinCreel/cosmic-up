@@ -11,14 +11,14 @@
 
 - name: Download Fisher installer
   ansible.builtin.get_url:
-    url: "{{ fish_shell_fisher_install_url }}"
-    dest: "{{ fish_shell_tmp_downloads }}/fisher.fish"
+    url: "{{ fisher_install_url }}"
+    dest: "{{ tmp_downloads_dir }}/fisher.fish"
     mode: '700'
   when: not fisher_function_file.stat.exists
 
 - name: Install Fisher
   ansible.builtin.shell: |
-    source "{{ fish_shell_tmp_downloads }}/fisher.fish"
+    source "{{ tmp_downloads_dir }}/fisher.fish"
     fisher install jorgebucaran/fisher
   args:
     executable: "{{ fish_shell_path }}"

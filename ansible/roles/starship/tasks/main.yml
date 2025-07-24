@@ -8,7 +8,7 @@
   block:
     - name: Get latest Starship version
       ansible.builtin.uri:
-        url: "{{ fish_shell_starship_latest_version_url }}"
+        url: "{{ starship_latest_version_url }}"
         return_content: true
       register: starship_api_response
 
@@ -18,7 +18,7 @@
 
     - name: Download Starship tarball
       ansible.builtin.get_url:
-        url: "{{ fish_shell_starship_download_url }}"
+        url: "{{ starship_download_url }}"
         dest: "{{ tmp_downloads_dir }}/starship.tar.gz"
         mode: '644'
 
@@ -34,4 +34,3 @@
         dest: "{{ user_local_bin }}/starship"
         mode: '755'
         remote_src: true
-      become: true

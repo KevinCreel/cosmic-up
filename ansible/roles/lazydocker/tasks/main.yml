@@ -1,31 +1,21 @@
-- name: Get latest lazydocker version
-  ansible.builtin.uri:
-    url: https://api.github.com/repos/jesseduffield/lazydocker/releases/latest
-    return_content: true
-  register: lazydocker_api_response
-
-- name: Set lazydocker version fact
-  ansible.builtin.set_fact:
-    lazydocker_version: "{{ (lazydocker_api_response.json.tag_name | regex_replace('^v', '')) }}"
-
-- name: Set lazydocker archive, extract dir, and download url
-  ansible.builtin.set_fact:
-    lazydocker_archive: "lazydocker_{{ lazydocker_version }}_Linux_x86_64.tar.gz"
-    lazydocker_extract_dir: "lazydocker_{{ lazydocker_version }}_Linux_x86_64"
-    lazydocker_download_url: "https://github.com/jesseduffield/lazydocker/releases/download/v{{ lazydocker_version }}/{{ lazydocker_archive }}"
-
 - name: Check if lazydocker binary is already installed
   ansible.builtin.stat:
     path: "/usr/bin/lazydocker"
   register: lazydocker_binaries_stat
 
-- name: Set fact for whether binary exists
-  ansible.builtin.set_fact:
-    all_binaries_exist: "{{ lazydocker_binaries_stat.stat.exists | default(false) }}"
-
 - name: Install lazydocker if not present
-  when: not all_binaries_exist
+  when: not lazydocker_binaries_stat.stat.exists
   block:
+    - name: Get latest lazygit version
+      ansible.builtin.uri:
+        url: "{{ lazydocker_latest_version_url }}"
+        return_content: true
+      register: lazydocker_api_response
+
+    - name: Set lazygit version fact
+      ansible.builtin.set_fact:
+        lazydocker_version: "{{ lazydocker_api_response.json.tag_name | regex_replace('^v', '') }}"
+
     - name: Download lazydocker binary if not present
       ansible.builtin.get_url:
         url: "{{ lazydocker_download_url }}"
@@ -46,25 +36,9 @@
         mode: '755'
         remote_src: true
 
-    - name: Verify binary is present in /usr/bin
-      ansible.builtin.stat:
-        path: "/usr/bin/lazydocker"
-      register: verify_binaries
-
-    - name: Fail if binary is missing after copy
-      ansible.builtin.fail:
-        msg: "Binary lazydocker was not found in /usr/bin after copy!"
-      when: not verify_binaries.stat.exists
-
-- name: Ensure ~/.local/bin exists
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/bin"
-    state: directory
-    mode: '0755'
-
-- name: Symlink lazydocker binary to ~/.local/bin
+- name: Symlink lazydocker binary to {{ user_local_bin }}
   ansible.builtin.file:
     src: "/usr/bin/lazydocker"
-    dest: "{{ ansible_env.HOME }}/.local/bin/lazydocker"
+    dest: "{{ user_local_bin }}/lazydocker"
     state: link
     force: true
