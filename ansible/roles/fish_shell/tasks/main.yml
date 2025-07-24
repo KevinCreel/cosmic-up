@@ -4,8 +4,6 @@
     name: fish
     state: present
   become: true
-  tags:
-    - fish
 
 - name: Ensure Fish config directories exist
   ansible.builtin.file:
@@ -18,9 +16,6 @@
     - { path: "{{ fish_shell_config_dir }}", mode: '700' }
     - { path: "{{ fish_shell_config_dir }}/conf.d", mode: '700' }
     - { path: "{{ fish_shell_config_dir }}/completions", mode: '700' }
-  tags:
-    - fish
-    - config
 
 - name: Copy xdg.fish config
   ansible.builtin.copy:

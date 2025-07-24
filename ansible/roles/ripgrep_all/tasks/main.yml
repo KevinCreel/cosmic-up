@@ -1,0 +1,75 @@
+- name: Check if ripgrep-all binaries are already installed
+  ansible.builtin.stat:
+    path: "/usr/bin/{{ item }}"
+  register: ripgrep_all_binaries_stat
+  loop: "{{ ripgrep_all_binaries }}"
+
+- name: Set fact for whether all binaries exist
+  ansible.builtin.set_fact:
+    all_binaries_exist: "{{ (ripgrep_all_binaries_stat.results | map(attribute='stat.exists') | list | min) | bool }}"
+
+- name: Install ripgrep-all if not present
+  when: not all_binaries_exist
+  block:
+    - name: Install dependencies
+      ansible.builtin.apt:
+        name: [pandoc, poppler-utils]
+        state: present
+      become: true
+
+    - name: Download ripgrep-all binary if not present
+      ansible.builtin.get_url:
+        url: "{{ ripgrep_all_download_url }}"
+        dest: "{{ tmp_downloads_dir }}/{{ ripgrep_all_archive }}"
+        mode: '0644'
+
+    - name: Unarchive ripgrep-all binary if not present
+      ansible.builtin.unarchive:
+        src: "{{ tmp_downloads_dir }}/{{ ripgrep_all_archive }}"
+        dest: "{{ tmp_extracts_dir }}"
+        remote_src: true
+
+    - name: Move rga binaries to /usr/bin
+      become: true
+      ansible.builtin.copy:
+        src: "{{ tmp_extracts_dir }}/{{ ripgrep_all_extract_dir }}/{{ item }}"
+        dest: "/usr/bin/{{ item }}"
+        mode: '755'
+        remote_src: true
+      loop: "{{ ripgrep_all_binaries }}"
+
+    - name: Verify binaries are present in /usr/bin
+      ansible.builtin.stat:
+        path: "/usr/bin/{{ item }}"
+      loop: "{{ ripgrep_all_binaries }}"
+      register: verify_binaries
+
+    - name: Fail if any binary is missing after copy
+      ansible.builtin.fail:
+        msg: "Binary {{ item.item }} was not found in /usr/bin after copy!"
+      when: not item.stat.exists
+      loop: "{{ verify_binaries.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Symlink rga binaries to ~/.local/bin
+      ansible.builtin.file:
+        src: "/usr/bin/{{ item }}"
+        dest: "{{ ansible_env.HOME }}/.local/bin/{{ item }}"
+        state: link
+        force: true
+      loop: "{{ ripgrep_all_binaries }}"
+
+- name: Ensure ~/.local/bin exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin"
+    state: directory
+    mode: '0755'
+
+- name: Symlink rga binaries to ~/.local/bin
+  ansible.builtin.file:
+    src: "/usr/bin/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/.local/bin/{{ item }}"
+    state: link
+    force: true
+  loop: "{{ ripgrep_all_binaries }}"

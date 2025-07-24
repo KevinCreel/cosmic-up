@@ -22,75 +22,108 @@
         - "{{ user_cache_dir }}"
         - "{{ user_apps_dir }}"
         - "{{ user_fonts_dir }}"
+      tags: [always]
 
     - name: Configure host settings
       ansible.builtin.include_role:
         name: host_config
+        apply:
+          tags: [host-config]
       when: enable_host_config
-      tags: [host_config]
+      tags: [host-config]
 
     - name: Create User specified directories
       ansible.builtin.include_role:
         name: create_dirs
+        apply:
+          tags: [create-dirs]
       when: enable_create_dirs
-      tags: [create_dirs, dirs]
+      tags: [create-dirs]
 
     - name: Manage system packages
       ansible.builtin.include_role:
         name: manage_packages
+        apply:
+          tags: [packages]
       when: enable_manage_packages
-      tags: [manage_packages, packages]
+      tags: [packages]
 
     - name: Configure ufw firewall
       ansible.builtin.include_role:
         name: ufw
+        apply:
+          tags: [firewall]
       when: enable_ufw
-      tags: [ufw, firewall]
+      tags: [firewall]
 
     - name: Install Nerd Fonts
       ansible.builtin.include_role:
         name: nerd_fonts
+        apply:
+          tags: [nerd-fonts]
       when: enable_nerd_fonts
-      tags: [nerd_fonts, fonts]
+      tags: [nerd-fonts]
 
     - name: Install and configure Docker
       ansible.builtin.include_role:
         name: docker
+        apply:
+          tags: [docker]
       when: enable_docker
       tags: [docker]
 
     - name: Install and configure fish shell
       ansible.builtin.include_role:
         name: fish_shell
+        apply:
+          tags: [fish]
       when: enable_fish_shell
-      tags: [fish_shell, fish]
+      tags: [fish]
 
     - name: Install Kickstart
       ansible.builtin.include_role:
         name: kickstart
+        apply:
+          tags: [kickstart]
       when: enable_kickstart
-      tags: [kickstart, nvim]
+      tags: [kickstart]
 
     - name: Install GitHub CLI
       ansible.builtin.include_role:
         name: github_cli
+        apply:
+          tags: [github-cli]
       when: enable_github_cli
-      tags: [github_cli, github]
+      tags: [github-cli]
 
     - name: Install yadm and setup dotfiles
       ansible.builtin.include_role:
         name: yadm
+        apply:
+          tags: [yadm]
       when: enable_yadm
-      tags: [yadm, dotfiles]
+      tags: [yadm]
 
     - name: Install vim-plug
       ansible.builtin.include_role:
         name: vimplug
+        apply:
+          tags: [vimplug]
       when: enable_vimplug
       tags: [vimplug]
 
     - name: Install Ollama and Open WebUI
       ansible.builtin.include_role:
         name: ollama
+        apply:
+          tags: [ollama]
       when: enable_ollama
       tags: [ollama]
+
+    - name: Install ripgrep-all
+      ansible.builtin.include_role:
+        name: ripgrep_all
+        apply:
+          tags: [ripgrep-all]
+      when: enable_ripgrep_all
+      tags: [ripgrep-all]

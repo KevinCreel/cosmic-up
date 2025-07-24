@@ -1,0 +1,9 @@
+ripgrep_all_version: "v0.10.9"
+ripgrep_all_binaries:
+  - rga
+  - rga-fzf
+  - rga-fzf-open
+  - rga-preproc
+ripgrep_all_archive: "ripgrep_all-{{ ripgrep_all_version }}-x86_64-unknown-linux-musl.tar.gz"
+ripgrep_all_extract_dir: "ripgrep_all-{{ ripgrep_all_version }}-x86_64-unknown-linux-musl"
+ripgrep_all_download_url: "https://github.com/phiresky/ripgrep-all/releases/download/{{ ripgrep_all_version }}/{{ ripgrep_all_archive }}"

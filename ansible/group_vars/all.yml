@@ -15,6 +15,7 @@ enable_github_cli: true
 enable_yadm: true
 enable_vimplug: true
 enable_ollama: true
+enable_ripgrep_all: true
 
 # User directories (customize if needed)
 user_apps_dir: "{{ user_home_dir }}/Applications"
