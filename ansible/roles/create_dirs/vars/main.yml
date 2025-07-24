@@ -9,6 +9,8 @@ create_dirs_list:
     mode: '700'
   - path: "{{ user_local_dir }}"
     mode: '700'
+  - path: "{{ user_local_bin }}"
+    mode: '700'
   - path: "{{ user_config_dir }}"
     mode: '700'
   - path: "{{ user_data_dir }}"

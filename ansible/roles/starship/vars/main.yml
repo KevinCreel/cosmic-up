@@ -1,0 +1,2 @@
+starship_latest_version_url: https://api.github.com/repos/starship/starship/releases/latest
+starship_download_url: https://github.com/starship/starship/releases/download/v{{ starship_version }}/starship-x86_64-unknown-linux-gnu.tar.gz

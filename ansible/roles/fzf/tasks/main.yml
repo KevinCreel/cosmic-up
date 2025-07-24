@@ -1,0 +1,48 @@
+- name: Check if fzf binary is already installed
+  ansible.builtin.stat:
+    path: "/usr/bin/fzf"
+  register: fzf_stat
+
+- name: Install fzf if not present
+  when: not fzf_stat.stat.exists
+  block:
+    - name: Get latest fzf version
+      ansible.builtin.uri:
+        url: "{{ fzf_latest_version_url }}"
+        return_content: true
+      register: fzf_api_response
+
+    - name: Set fzf version fact
+      ansible.builtin.set_fact:
+        fzf_version: "{{ fzf_api_response.json.tag_name | regex_replace('^v', '') }}"
+
+    - name: Set fzf archive and download URL
+      ansible.builtin.set_fact:
+        fzf_archive: "fzf-{{ fzf_version }}-linux_amd64.tar.gz"
+        fzf_download_url: "{{ fzf_download_url }}"
+
+    - name: Download fzf prebuilt binary
+      ansible.builtin.get_url:
+        url: "{{ fzf_download_url }}"
+        dest: "{{ tmp_downloads_dir }}/fzf.tar.gz"
+        mode: '0644'
+
+    - name: Ensure fzf extract directory exists
+      ansible.builtin.file:
+        path: "{{ tmp_extracts_dir }}/fzf"
+        state: directory
+        mode: '700'
+
+    - name: Extract fzf binary
+      ansible.builtin.unarchive:
+        src: "{{ tmp_downloads_dir }}/fzf.tar.gz"
+        dest: "{{ tmp_extracts_dir }}/fzf"
+        remote_src: true
+        creates: "{{ tmp_extracts_dir }}/fzf/fzf"
+
+    - name: Install fzf binary to user local bin
+      ansible.builtin.copy:
+        src: "{{ tmp_extracts_dir }}/fzf/fzf"
+        dest: "{{ user_local_bin }}/fzf"
+        mode: '755'
+        remote_src: true

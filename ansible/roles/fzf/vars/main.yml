@@ -1,0 +1,2 @@
+fzf_latest_version_url: https://api.github.com/repos/junegunn/fzf/releases/latest
+fzf_download_url: https://github.com/junegunn/fzf/releases/download/v{{ fzf_version }}/fzf-{{ fzf_version }}-linux_amd64.tar.gz

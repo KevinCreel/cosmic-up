@@ -39,3 +39,9 @@ user_config_dir: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/
 user_data_dir: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME + '/.local/share', true) }}"
 user_cache_dir: "{{ ansible_env.XDG_CACHE_HOME | default(ansible_env.HOME + '/.cache', true) }}"
 user_local_dir: "{{ user_home_dir }}/.local"
+user_local_bin: "{{ user_local_dir }}/bin"
+
+# Fish Shell
+fish_shell_path: /usr/bin/fish
+fish_shell_user: "{{ ansible_user_id }}"
+fish_shell_config_dir: "{{ user_config_dir }}/fish"

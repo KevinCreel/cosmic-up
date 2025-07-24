@@ -1,0 +1,3 @@
+fish_add_paths:
+  - "{{ user_home_dir }}/.cargo/bin"
+  - "{{ user_local_bin }}"

@@ -41,6 +41,55 @@
       when: enable_nerd_fonts
       tags: [nerd-fonts]
 
+    - name: Install and configure fish shell
+      ansible.builtin.include_role:
+        name: fish_shell
+        apply:
+          tags: [fish_shell, fish]
+      tags: [fish_shell, fish]
+
+    - name: Add custom paths to Fish user paths
+      ansible.builtin.include_role:
+        name: fish_paths
+        apply:
+          tags: [fish, fish_paths]
+      tags: [fish, fish_paths]
+
+    - name: Install Fisher and plugins
+      ansible.builtin.include_role:
+        name: fisher
+        apply:
+          tags: [fish, fisher]
+      tags: [fish, fisher]
+
+    - name: Install Starship prompt
+      ansible.builtin.include_role:
+        name: starship
+        apply:
+          tags: [fish, starship]
+      tags: [fish, starship]
+
+    - name: Install fzf
+      ansible.builtin.include_role:
+        name: fzf
+        apply:
+          tags: [fish, fzf]
+      tags: [fish, fzf]
+
+    - name: Symlink fd and bat
+      ansible.builtin.include_role:
+        name: fish_symlinks
+        apply:
+          tags: [fish, fish_symlinks]
+      tags: [fish, fish_symlinks]
+
+    - name: Install extra completions
+      ansible.builtin.include_role:
+        name: fish_completions
+        apply:
+          tags: [fish, fish_completions]
+      tags: [fish, fish_completions]
+
     - name: Install and configure Docker
       ansible.builtin.include_role:
         name: docker
@@ -48,14 +97,6 @@
           tags: [docker]
       when: enable_docker
       tags: [docker]
-
-    - name: Install and configure fish shell
-      ansible.builtin.include_role:
-        name: fish_shell
-        apply:
-          tags: [fish]
-      when: enable_fish_shell
-      tags: [fish]
 
     - name: Install Kickstart
       ansible.builtin.include_role:

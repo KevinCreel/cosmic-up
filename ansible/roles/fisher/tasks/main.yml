@@ -1,0 +1,34 @@
+- name: Check if Fisher is installed
+  ansible.builtin.command: "{{ fish_shell_path }} -c type -q fisher"
+  register: fisher_check
+  changed_when: false
+  failed_when: false
+
+- name: Check if Fisher function file exists
+  ansible.builtin.stat:
+    path: "{{ fish_shell_config_dir }}/functions/fisher.fish"
+  register: fisher_function_file
+
+- name: Download Fisher installer
+  ansible.builtin.get_url:
+    url: "{{ fish_shell_fisher_install_url }}"
+    dest: "{{ fish_shell_tmp_downloads }}/fisher.fish"
+    mode: '700'
+  when: not fisher_function_file.stat.exists
+
+- name: Install Fisher
+  ansible.builtin.shell: |
+    source "{{ fish_shell_tmp_downloads }}/fisher.fish"
+    fisher install jorgebucaran/fisher
+  args:
+    executable: "{{ fish_shell_path }}"
+  changed_when: false
+  when: not fisher_function_file.stat.exists
+
+- name: Ensure Fisher plugins are installed
+  ansible.builtin.include_tasks: install_fisher_plugin.yml
+  vars:
+    fisher_plugin: "{{ item }}"
+  loop: "{{ fisher_plugins }}"
+  loop_control:
+    label: "{{ item }}"

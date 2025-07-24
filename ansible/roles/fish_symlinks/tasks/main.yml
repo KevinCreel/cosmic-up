@@ -1,0 +1,25 @@
+- name: Check for fdfind binary
+  ansible.builtin.stat:
+    path: /usr/bin/fdfind
+  register: fdfind_stat
+
+- name: Create fd symlink if fdfind exists
+  ansible.builtin.file:
+    src: /usr/bin/fdfind
+    dest: "{{ user_local_bin }}/fd"
+    state: link
+    force: true
+  when: fdfind_stat.stat.exists
+
+- name: Check for batcat binary
+  ansible.builtin.stat:
+    path: /usr/bin/batcat
+  register: batcat_stat
+
+- name: Create bat symlink if batcat exists
+  ansible.builtin.file:
+    src: /usr/bin/batcat
+    dest: "{{ user_local_bin }}/bat"
+    state: link
+    force: true
+  when: batcat_stat.stat.exists
