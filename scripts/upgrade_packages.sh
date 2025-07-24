@@ -199,7 +199,7 @@ upgrade_system_packages() {
     
     # Perform distribution upgrade
     log_debug "Performing distribution upgrade..."
-    if ! sudo apt-get --auto-remove full-upgrade -y; then
+    if ! sudo DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confnew" --auto-remove full-upgrade -y; then
         log_error "Failed to perform distribution upgrade"
         return 1
     fi

@@ -58,6 +58,7 @@
   become: true
   community.general.flatpak_remote:
     name: flathub
+    flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
     state: present
 
 # Manage Flatpak packages

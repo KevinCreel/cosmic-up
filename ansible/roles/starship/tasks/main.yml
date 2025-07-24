@@ -34,3 +34,15 @@
         dest: "{{ user_local_bin }}/starship"
         mode: '755'
         remote_src: true
+
+- name: Add Starship prompt conf
+  ansible.builtin.copy:
+    dest: "{{ fish_config_dir }}/conf.d/starship.fish"
+    content: |
+      starship init fish | source
+    mode: '644'
+
+- name: Configure Starship
+  ansible.builtin.command: "starship preset no-runtime-versions -o {{ user_config_dir }}/starship.toml"
+  args:
+    creates: "{{ user_config_dir }}/starship.toml"

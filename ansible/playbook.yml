@@ -2,9 +2,7 @@
 - name: Setup Cosmic OS
   hosts: localhost
   roles:
-    - name: internal_vars
-      tags: [always]
-    - name: create_dirs
+    - role: create_dirs
       tags: [always]
   tasks:
     - name: Configure host settings
@@ -62,7 +60,7 @@
           tags: [fish]
       when: enabled_roles.fisher and enabled_roles.fish_shell
       tags: [fish]
-    
+
     - name: Symlink fd and bat
       ansible.builtin.include_role:
         name: fish_symlinks

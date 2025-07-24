@@ -38,3 +38,10 @@
     shell: "{{ fish_path }}"
   become: true
   when: fish_set_default_shell | bool
+
+# Remove Fish greeting
+- name: Remove Fish greeting
+  ansible.builtin.shell: "set -U fish_greeting"
+  args:
+    executable: "{{ fish_path }}"
+  changed_when: false

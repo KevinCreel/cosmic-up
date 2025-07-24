@@ -1,2 +1,1 @@
 yadm_repo_dest: "{{ user_data_dir }}/yadm/repo.git"
-

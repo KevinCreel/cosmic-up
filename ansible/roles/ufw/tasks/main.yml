@@ -15,7 +15,7 @@
         direction: outgoing
         policy: "{{ ufw_outgoing_policy_default }}"
       notify: Reload UFW
-    
+
     - name: Apply custom UFW rules
       community.general.ufw:
         rule: "{{ item.rule }}"
@@ -29,4 +29,3 @@
       community.general.ufw:
         state: enabled
       notify: Reload UFW
-
