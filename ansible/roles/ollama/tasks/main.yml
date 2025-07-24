@@ -1,6 +1,6 @@
 - name: Check if ollama binary exists
   ansible.builtin.stat:
-    path: /usr/local/bin/ollama
+    path: "{{ user_bin_dir }}/ollama"
   register: ollama_stat
   changed_when: false
   failed_when: false

@@ -1,6 +1,6 @@
 - name: Check if lazygit binary is already installed
   ansible.builtin.stat:
-    path: "/usr/bin/lazygit"
+    path: "{{ user_bin_dir }}/lazygit"
   register: lazygit_binaries_stat
 
 - name: Install lazygit if not present
@@ -28,17 +28,17 @@
         dest: "{{ tmp_extracts_dir }}"
         remote_src: true
 
-    - name: Move lazygit binary to /usr/bin
+    - name: Move lazygit binary to {{ user_bin_dir }}
       become: true
       ansible.builtin.copy:
         src: "{{ tmp_extracts_dir }}/lazygit"
-        dest: "/usr/bin/lazygit"
+        dest: "{{ user_bin_dir }}/lazygit"
         mode: '755'
         remote_src: true
 
 - name: Symlink lazygit binary to {{ user_local_bin }}
   ansible.builtin.file:
-    src: "/usr/bin/lazygit"
+    src: "{{ user_bin_dir }}/lazygit"
     dest: "{{ user_local_bin }}/lazygit"
     state: link
     force: true

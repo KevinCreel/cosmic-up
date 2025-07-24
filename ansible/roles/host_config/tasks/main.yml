@@ -1,20 +1,20 @@
 # Set system hostname
 - name: Set hostname
   ansible.builtin.hostname:
-    name: "{{ host_config_hostname }}"
+    name: "{{ hostname }}"
 
 # Configure system timezone
 - name: Set timezone
   become: true
   community.general.timezone:
-    name: "{{ host_config_timezone }}"
+    name: "{{ timezone }}"
 
 # Generate and enable locales
 - name: Generate locales
   community.general.locale_gen:
     name: "{{ item }}"
     state: present
-  loop: "{{ host_config_locales }}"
+  loop: "{{ locales }}"
 
 # Configure passwordless sudo for user (optional)
 - name: Configure passwordless sudo
@@ -24,4 +24,4 @@
     content: "{{ ansible_user_id }} ALL=(ALL) NOPASSWD:ALL"
     mode: '440'
     validate: "/usr/sbin/visudo --check --file=%s"
-  when: host_config_passwordless_sudo
+  when: passwordless_sudo

@@ -1,5 +1,6 @@
 # Create user directories with proper permissions
 - name: Create temporary and user directory structure
+  become: true
   ansible.builtin.file:
     path: "{{ item.path }}"
     state: directory

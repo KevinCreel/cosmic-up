@@ -1,4 +1,2 @@
 vimplug_repo_url: "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-vimplug_user: "{{ ansible_user_id }}"
-vimplug_group: "{{ ansible_user_gid }}"
 vimplug_autoload_dir: "{{ user_home_dir }}/.vim/autoload"

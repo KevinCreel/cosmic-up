@@ -1,47 +1,103 @@
-# =====================
-# User-editable variables
-# =====================
+# =====================================================
+# Cosmic OS Ansible Playbook - User Configuration
+# =====================================================
+#
+# This file (all.yml) is the SINGLE SOURCE OF TRUTH for all user configuration settings.
+#
+# To customize your Cosmic OS setup, edit the variables in this file only.
+# - Enable or disable roles
+# - Set host, firewall, user, and application preferences
+# - Add custom firewall rules, fonts, plugins, etc.
+#
+# DO NOT edit other variable files for user-level configuration—make all changes here.
+#
+# For documentation and examples, see the comments throughout this file.
+# =====================================================
 
-# Enable/disable roles
-enable_host_config: true
-enable_create_dirs: true
-enable_manage_packages: true
-enable_ufw: true
-enable_nerd_fonts: true
-enable_docker: true
-enable_fish_shell: true
-enable_kickstart: false
-enable_github_cli: true
-enable_yadm: true
-enable_vimplug: true
-enable_ollama: true
-enable_ripgrep_all: true
-enable_lazygit: true
-enable_lazydocker: true
+# --------------
+# Host Settings
+# --------------
+passwordless_sudo: true
+timezone: America/New_York
+hostname: cosmic
+locales:
+  - en_US.UTF-8
 
-# User directories (customize if needed)
+# --------------
+# Firewall (UFW) Settings
+# --------------
+ufw_incoming_policy_default: 'deny'   # Default policy for incoming traffic
+ufw_outgoing_policy_default: 'allow'  # Default policy for outgoing traffic
+ufw_logging: 'on'                     # UFW logging: 'on', 'off', 'low', 'medium', 'high'
+
+# Custom UFW rules (add your own as needed)
+ufw_custom_rules: []
+# Example:
+# ufw_custom_rules:
+#   - rule: allow
+#     port: 22
+#     proto: tcp
+
+# --------------
+# User Directories
+# --------------
 user_apps_dir: "{{ user_home_dir }}/Applications"
 user_fonts_dir: "{{ user_local_dir }}/share/fonts"
-
-# =====================
-# INTERNAL VARIABLES - DO NOT EDIT UNLESS YOU KNOW WHAT YOU ARE DOING
-# =====================
-
-# Temporary directories
-tmp_dir: "/tmp/cosmic-up"
-tmp_downloads_dir: "{{ tmp_dir }}/downloads"
-tmp_builds_dir: "{{ tmp_dir }}/builds"
-tmp_extracts_dir: "{{ tmp_dir }}/extracts"
-
-# User directories (internal)
-user_home_dir: "{{ ansible_env.HOME }}"
-user_config_dir: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config', true) }}"
-user_data_dir: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME + '/.local/share', true) }}"
-user_cache_dir: "{{ ansible_env.XDG_CACHE_HOME | default(ansible_env.HOME + '/.cache', true) }}"
 user_local_dir: "{{ user_home_dir }}/.local"
 user_local_bin: "{{ user_local_dir }}/bin"
 
+# --------------
 # Fish Shell Settings
-fish_shell_path: /usr/bin/fish
-fish_shell_user: "{{ ansible_user_id }}"
-fish_shell_config_dir: "{{ user_config_dir }}/fish"
+# --------------
+fish_set_default_shell: true
+fish_paths_add_paths:
+  - "{{ user_home_dir }}/.cargo/bin"
+  - "{{ user_local_bin }}"
+
+# Fisher plugins to install
+fisher_plugins:
+  - jorgebucaran/nvm.fish
+  - PatrickF1/fzf.fish
+  - mattmc3/themepak.fish
+  - decors/fish-colored-man
+  - kidonng/zoxide.fish
+  - jorgebucaran/autopair.fish
+
+# --------------
+# Nerd Fonts
+# --------------
+nerd_fonts_install:
+  - Hack
+  - FiraCode
+  - Meslo
+  - Iosevka
+
+# --------------
+# Yadm Settings
+# --------------
+yadm_repo_url: ""
+
+# --------------
+# Role Toggles
+# --------------
+enabled_roles:
+  host_config: true
+  manage_packages: true
+  ufw: true
+  nerd_fonts: true
+  docker: true
+  fish_shell: true
+  fish_paths: true
+  fisher: true
+  starship: true
+  fish_symlinks: true
+  fish_completions: true
+  fzf: true
+  kickstart: true
+  github_cli: true
+  yadm: true
+  vimplug: true
+  ollama: true
+  ripgrep_all: true
+  lazygit: true
+  lazydocker: true

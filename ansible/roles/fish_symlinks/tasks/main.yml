@@ -1,11 +1,11 @@
 - name: Check for fdfind binary
   ansible.builtin.stat:
-    path: /usr/bin/fdfind
+    path: "{{ user_bin_dir }}/fdfind"
   register: fdfind_stat
 
 - name: Create fd symlink if fdfind exists
   ansible.builtin.file:
-    src: /usr/bin/fdfind
+    src: "{{ user_bin_dir }}/fdfind"
     dest: "{{ user_local_bin }}/fd"
     state: link
     force: true
@@ -13,12 +13,12 @@
 
 - name: Check for batcat binary
   ansible.builtin.stat:
-    path: /usr/bin/batcat
+    path: "{{ user_bin_dir }}/batcat"
   register: batcat_stat
 
 - name: Create bat symlink if batcat exists
   ansible.builtin.file:
-    src: /usr/bin/batcat
+    src: "{{ user_bin_dir }}/batcat"
     dest: "{{ user_local_bin }}/bat"
     state: link
     force: true

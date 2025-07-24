@@ -1,5 +1,5 @@
 - name: Get list of installed Fisher plugins
-  ansible.builtin.command: "{{ fish_shell_path }} -c 'fisher list'"
+  ansible.builtin.command: "{{ fish_path }} -c 'fisher list'"
   register: fisher_list
   changed_when: false
   failed_when: false
@@ -7,7 +7,7 @@
 - name: Install Fisher plugin if not present
   ansible.builtin.shell: "fisher install {{ fisher_plugin }}"
   args:
-    executable: "{{ fish_shell_path }}"
+    executable: "{{ fish_path }}"
   # Normalize both plugin and list to lower case for comparison
   when: >
     (fisher_list.stdout | lower).splitlines() | select('equalto', fisher_plugin | lower) | list | length == 0

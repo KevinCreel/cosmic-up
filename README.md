@@ -109,18 +109,41 @@ make playbook EXTRA_ARGS="--tags fish_shell,github_cli"
 
 ## Configuration
 
-All settings are managed via Ansible variables, allowing you to fully customize your setup. The most important file is:
+All user configuration for Cosmic OS is managed in a single file:
 
-- [`ansible/group_vars/all.yml`](ansible/group_vars/all.yml): **Enable or disable major features and roles.**
+```
+ansible/group_vars/all.yml
+```
 
-Other key files for fine-tuning:
+**This file is the single source of truth for customizing your setup.**
 
-- **OS Settings:** [`ansible/roles/host_config/vars/main.yml`](ansible/roles/host_config/vars/main.yml)
-- **Packages:** [`ansible/roles/manage_packages/vars/main.yml`](ansible/roles/manage_packages/vars/main.yml)
-- **Fonts:** [`ansible/roles/nerd_fonts/vars/main.yml`](ansible/roles/nerd_fonts/vars/main.yml)
-- **Dotfiles:** [`ansible/roles/yadm/vars/main.yml`](ansible/roles/yadm/vars/main.yml)
+- Enable or disable roles
+- Set host, firewall, user, and application preferences
+- Add custom firewall rules, fonts, plugins, and more
 
-> **Tip:** At minimum, set your locale, timezone, and hostname in the [Host Config File](ansible/roles/host_config/vars/main.yml).
+**To customize your setup:**
+1. Open `ansible/group_vars/all.yml` in your editor.
+2. Edit the variables as needed. For example:
+
+```yaml
+# Enable or disable roles
+enable_docker: true
+enable_ufw: true
+
+# Set your timezone and hostname
+timezone: America/New_York
+hostname: cosmic
+
+# Add custom UFW firewall rules
+ufw_custom_rules:
+  - rule: allow
+    port: 22
+    proto: tcp
+```
+
+> **Do not edit other variable files for user-level configuration—make all changes in `all.yml`.**
+
+For more details and examples, see the comments in `ansible/group_vars/all.yml`.
 
 ### Enabling/Disabling Features
 

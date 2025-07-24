@@ -1,20 +1,18 @@
 # Main playbook for Cosmic OS setup and configuration
 - name: Setup Cosmic OS
   hosts: localhost
-  tasks:
-    - name: Create temporary and user directory structure
-      ansible.builtin.include_role:
-        name: create_dirs
-        apply:
-          tags: [always]
+  roles:
+    - name: internal_vars
       tags: [always]
-
+    - name: create_dirs
+      tags: [always]
+  tasks:
     - name: Configure host settings
       ansible.builtin.include_role:
         name: host_config
         apply:
           tags: [host-config]
-      when: enable_host_config
+      when: enabled_roles.host_config
       tags: [host-config]
 
     - name: Manage system packages
@@ -22,7 +20,7 @@
         name: manage_packages
         apply:
           tags: [packages]
-      when: enable_manage_packages
+      when: enabled_roles.manage_packages
       tags: [packages]
 
     - name: Configure ufw firewall
@@ -30,7 +28,7 @@
         name: ufw
         apply:
           tags: [firewall]
-      when: enable_ufw
+      when: enabled_roles.ufw
       tags: [firewall]
 
     - name: Install Nerd Fonts
@@ -38,64 +36,71 @@
         name: nerd_fonts
         apply:
           tags: [nerd-fonts]
-      when: enable_nerd_fonts
+      when: enabled_roles.nerd_fonts
       tags: [nerd-fonts]
 
     - name: Install and configure fish shell
       ansible.builtin.include_role:
         name: fish_shell
         apply:
-          tags: [fish_shell, fish]
-      tags: [fish_shell, fish]
+          tags: [fish]
+      when: enabled_roles.fish_shell
+      tags: [fish]
 
     - name: Add custom paths to Fish user paths
       ansible.builtin.include_role:
         name: fish_paths
         apply:
-          tags: [fish, fish_paths]
-      tags: [fish, fish_paths]
+          tags: [fish]
+      when: enabled_roles.fish_shell and enabled_roles.fish_paths
+      tags: [fish]
 
     - name: Install Fisher and plugins
       ansible.builtin.include_role:
         name: fisher
         apply:
-          tags: [fish, fisher]
-      tags: [fish, fisher]
-
-    - name: Install Starship prompt
-      ansible.builtin.include_role:
-        name: starship
-        apply:
-          tags: [fish, starship]
-      tags: [fish, starship]
-
-    - name: Install fzf
-      ansible.builtin.include_role:
-        name: fzf
-        apply:
-          tags: [fish, fzf]
-      tags: [fish, fzf]
-
+          tags: [fish]
+      when: enabled_roles.fisher and enabled_roles.fish_shell
+      tags: [fish]
+    
     - name: Symlink fd and bat
       ansible.builtin.include_role:
         name: fish_symlinks
         apply:
-          tags: [fish, fish_symlinks]
-      tags: [fish, fish_symlinks]
+          tags: [fish]
+      tags: [fish]
+      when: enabled_roles.fish_shell and enabled_roles.fish_symlinks
 
     - name: Install extra completions
       ansible.builtin.include_role:
         name: fish_completions
         apply:
-          tags: [fish, fish_completions]
-      tags: [fish, fish_completions]
+          tags: [fish]
+      tags: [fish]
+      when: enabled_roles.fish_shell and enabled_roles.fish_completions
+
+    - name: Install Starship prompt
+      ansible.builtin.include_role:
+        name: starship
+        apply:
+          tags: [starship]
+      tags: [starship]
+      when: enabled_roles.starship
+
+    - name: Install fzf
+      ansible.builtin.include_role:
+        name: fzf
+        apply:
+          tags: [fzf]
+      tags: [fzf]
+      when: enabled_roles.fzf
 
     - name: Install and configure Docker
       ansible.builtin.include_role:
         name: docker
         apply:
           tags: [docker]
-      when: enable_docker
+      when: enabled_roles.docker
       tags: [docker]
 
     - name: Install Kickstart
@@ -103,7 +108,7 @@
         name: kickstart
         apply:
           tags: [kickstart]
-      when: enable_kickstart
+      when: enabled_roles.kickstart
       tags: [kickstart]
 
     - name: Install GitHub CLI
@@ -111,7 +116,7 @@
         name: github_cli
         apply:
           tags: [github-cli]
-      when: enable_github_cli
+      when: enabled_roles.github_cli
       tags: [github-cli]
 
     - name: Install yadm and setup dotfiles
@@ -119,7 +124,7 @@
         name: yadm
         apply:
           tags: [yadm]
-      when: enable_yadm
+      when: enabled_roles.yadm
       tags: [yadm]
 
     - name: Install vim-plug
@@ -127,7 +132,7 @@
         name: vimplug
         apply:
           tags: [vimplug]
-      when: enable_vimplug
+      when: enabled_roles.vimplug
       tags: [vimplug]
 
     - name: Install Ollama and Open WebUI
@@ -135,7 +140,7 @@
         name: ollama
         apply:
           tags: [ollama]
-      when: enable_ollama
+      when: enabled_roles.ollama
       tags: [ollama]
 
     - name: Install ripgrep-all
@@ -143,7 +148,7 @@
         name: ripgrep_all
         apply:
           tags: [ripgrep-all]
-      when: enable_ripgrep_all
+      when: enabled_roles.ripgrep_all
       tags: [ripgrep-all]
 
     - name: Install lazygit
@@ -151,7 +156,7 @@
         name: lazygit
         apply:
           tags: [lazygit]
-      when: enable_lazygit
+      when: enabled_roles.lazygit
       tags: [lazygit]
 
     - name: Install lazydocker
@@ -159,5 +164,5 @@
         name: lazydocker
         apply:
           tags: [lazydocker]
-      when: enable_lazydocker
+      when: enabled_roles.lazydocker
       tags: [lazydocker]

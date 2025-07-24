@@ -1,6 +1,6 @@
 - name: Check if fzf binary is already installed
   ansible.builtin.stat:
-    path: "/usr/bin/fzf"
+    path: "{{ user_bin_dir }}/fzf"
   register: fzf_stat
 
 - name: Install fzf if not present
@@ -40,17 +40,17 @@
         remote_src: true
         creates: "{{ tmp_extracts_dir }}/fzf/fzf"
 
-    - name: Install fzf binary to user local bin
+    - name: Install fzf binary to {{ user_bin_dir }}
       become: true
       ansible.builtin.copy:
         src: "{{ tmp_extracts_dir }}/fzf/fzf"
-        dest: "/usr/bin/fzf"
+        dest: "{{ user_bin_dir }}/fzf"
         mode: '755'
         remote_src: true
 
-- name: Symlink fzf binary to user local bin
+- name: Symlink fzf binary to {{ user_local_bin }}
   ansible.builtin.file:
-    src: "/usr/bin/fzf"
+    src: "{{ user_bin_dir }}/fzf"
     dest: "{{ user_local_bin }}/fzf"
     state: link
     force: true

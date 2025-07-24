@@ -13,14 +13,14 @@
     group: "{{ ansible_user_gid }}"
     mode: "{{ item.mode }}"
   loop:
-    - { path: "{{ fish_shell_config_dir }}", mode: '700' }
-    - { path: "{{ fish_shell_config_dir }}/conf.d", mode: '700' }
-    - { path: "{{ fish_shell_config_dir }}/completions", mode: '700' }
+    - { path: "{{ fish_config_dir }}", mode: '700' }
+    - { path: "{{ fish_config_dir }}/conf.d", mode: '700' }
+    - { path: "{{ fish_config_dir }}/completions", mode: '700' }
 
 - name: Copy xdg.fish config
   ansible.builtin.copy:
     src: files/xdg.fish
-    dest: "{{ fish_shell_config_dir }}/conf.d/xdg.fish"
+    dest: "{{ fish_config_dir }}/conf.d/xdg.fish"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
     mode: '600'
@@ -28,13 +28,13 @@
 - name: Add Fish to /etc/shells
   ansible.builtin.lineinfile:
     path: /etc/shells
-    line: "{{ fish_shell_path }}"
+    line: "{{ fish_path }}"
     state: present
   become: true
 
 - name: Set Fish as default shell for user
   ansible.builtin.user:
-    name: "{{ fish_shell_user }}"
-    shell: "{{ fish_shell_path }}"
+    name: "{{ ansible_user_id }}"
+    shell: "{{ fish_path }}"
   become: true
-  when: fish_shell_set_default_shell | bool
+  when: fish_set_default_shell | bool

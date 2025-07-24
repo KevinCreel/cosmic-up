@@ -28,7 +28,7 @@
         dest: "{{ tmp_extracts_dir }}/"
         remote_src: true
 
-    - name: Install Starship binary to /usr/local/bin
+    - name: Install Starship binary to {{ user_local_bin }}
       ansible.builtin.copy:
         src: "{{ tmp_extracts_dir }}/starship"
         dest: "{{ user_local_bin }}/starship"

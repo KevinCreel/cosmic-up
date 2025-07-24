@@ -1,0 +1,19 @@
+# Internal variables for Cosmic OS setup
+# DO NOT EDIT UNLESS YOU KNOW WHAT YOU ARE DOING
+
+# Temporary directories
+tmp_dir: "/tmp/cosmic-up"
+tmp_downloads_dir: "{{ tmp_dir }}/downloads"
+tmp_builds_dir: "{{ tmp_dir }}/builds"
+tmp_extracts_dir: "{{ tmp_dir }}/extracts"
+
+# User directories (internal)
+user_home_dir: "{{ ansible_env.HOME }}"
+user_config_dir: "{{ ansible_env.XDG_CONFIG_HOME | default(ansible_env.HOME + '/.config', true) }}"
+user_data_dir: "{{ ansible_env.XDG_DATA_HOME | default(ansible_env.HOME + '/.local/share', true) }}"
+user_cache_dir: "{{ ansible_env.XDG_CACHE_HOME | default(ansible_env.HOME + '/.cache', true) }}"
+user_bin_dir: "/usr/local/bin"
+
+# Fish Paths
+fish_path: "{{ user_bin_dir }}/fish"
+fish_config_dir: "{{ user_config_dir }}/fish" 

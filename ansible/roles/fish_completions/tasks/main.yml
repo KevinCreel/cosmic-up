@@ -7,7 +7,7 @@
 - name: Write Docker completions to file
   ansible.builtin.copy:
     content: "{{ docker_completion.stdout }}"
-    dest: "{{ fish_shell_config_dir }}/completions/docker.fish"
+    dest: "{{ fish_config_dir }}/completions/docker.fish"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_gid }}"
     mode: '644'

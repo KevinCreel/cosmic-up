@@ -1,6 +1,6 @@
 - name: Check if ripgrep-all binaries are already installed
   ansible.builtin.stat:
-    path: "/usr/bin/{{ item }}"
+    path: "{{ user_bin_dir }}/{{ item }}"
   register: ripgrep_all_binaries_stat
   loop: "{{ ripgrep_all_binaries }}"
 
@@ -16,7 +16,7 @@
         name: [pandoc, poppler-utils]
         state: present
       become: true
-    
+
     - name: Get latest ripgrep-all version
       ansible.builtin.uri:
         url: "{{ ripgrep_all_latest_version_url }}"
@@ -39,11 +39,11 @@
         dest: "{{ tmp_extracts_dir }}"
         remote_src: true
 
-    - name: Move rga binaries to /usr/bin
+    - name: Move rga binaries to {{ user_bin_dir }}
       become: true
       ansible.builtin.copy:
         src: "{{ tmp_extracts_dir }}/{{ ripgrep_all_extract_dir }}/{{ item }}"
-        dest: "/usr/bin/{{ item }}"
+        dest: "{{ user_bin_dir }}/{{ item }}"
         mode: '755'
         remote_src: true
       loop: "{{ ripgrep_all_binaries }}"
@@ -51,7 +51,7 @@
 
 - name: Symlink rga binaries to {{ user_local_bin }}
   ansible.builtin.file:
-    src: "/usr/bin/{{ item }}"
+    src: "{{ user_bin_dir }}/{{ item }}"
     dest: "{{ user_local_bin }}/{{ item }}"
     state: link
     force: true

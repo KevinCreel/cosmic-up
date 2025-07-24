@@ -1,9 +1,2 @@
 # Fisher install URL
 fisher_install_url: https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish
-fisher_plugins:
-  - jorgebucaran/nvm.fish
-  - PatrickF1/fzf.fish
-  - mattmc3/themepak.fish
-  - decors/fish-colored-man
-  - kidonng/zoxide.fish
-  - jorgebucaran/autopair.fish

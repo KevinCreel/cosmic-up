@@ -1,7 +1,7 @@
 - name: Add custom paths to Fish user paths
   ansible.builtin.shell: "fish_add_path {{ item }}"
   args:
-    executable: "{{ fish_shell_path }}"
+    executable: "{{ fish_path }}"
   loop: "{{ fish_paths_add_paths }}"
   changed_when: false
   failed_when: false

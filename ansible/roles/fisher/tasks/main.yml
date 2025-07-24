@@ -1,12 +1,12 @@
 - name: Check if Fisher is installed
-  ansible.builtin.command: "{{ fish_shell_path }} -c type -q fisher"
+  ansible.builtin.command: "{{ fish_path }} -c type -q fisher"
   register: fisher_check
   changed_when: false
   failed_when: false
 
 - name: Check if Fisher function file exists
   ansible.builtin.stat:
-    path: "{{ fish_shell_config_dir }}/functions/fisher.fish"
+    path: "{{ fish_config_dir }}/functions/fisher.fish"
   register: fisher_function_file
 
 - name: Download Fisher installer
@@ -21,7 +21,7 @@
     source "{{ tmp_downloads_dir }}/fisher.fish"
     fisher install jorgebucaran/fisher
   args:
-    executable: "{{ fish_shell_path }}"
+    executable: "{{ fish_path }}"
   changed_when: false
   when: not fisher_function_file.stat.exists
 

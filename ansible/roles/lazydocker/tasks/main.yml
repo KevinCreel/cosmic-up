@@ -1,6 +1,6 @@
 - name: Check if lazydocker binary is already installed
   ansible.builtin.stat:
-    path: "/usr/bin/lazydocker"
+    path: "{{ user_bin_dir }}/lazydocker"
   register: lazydocker_binaries_stat
 
 - name: Install lazydocker if not present
@@ -28,17 +28,17 @@
         dest: "{{ tmp_extracts_dir }}"
         remote_src: true
 
-    - name: Move lazydocker binary to /usr/bin
+    - name: Move lazydocker binary to {{ user_bin_dir }}
       become: true
       ansible.builtin.copy:
         src: "{{ tmp_extracts_dir }}/lazydocker"
-        dest: "/usr/bin/lazydocker"
+        dest: "{{ user_bin_dir }}/lazydocker"
         mode: '755'
         remote_src: true
 
 - name: Symlink lazydocker binary to {{ user_local_bin }}
   ansible.builtin.file:
-    src: "/usr/bin/lazydocker"
+    src: "{{ user_bin_dir }}/lazydocker"
     dest: "{{ user_local_bin }}/lazydocker"
     state: link
     force: true

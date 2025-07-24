@@ -15,9 +15,18 @@
         direction: outgoing
         policy: "{{ ufw_outgoing_policy_default }}"
       notify: Reload UFW
+    
+    - name: Apply custom UFW rules
+      community.general.ufw:
+        rule: "{{ item.rule }}"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto | default(omit) }}"
+      loop: "{{ ufw_custom_rules | default([]) }}"
+      notify: Reload UFW
 
     # Enable UFW firewall
     - name: Enable UFW
       community.general.ufw:
         state: enabled
       notify: Reload UFW
+

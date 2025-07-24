@@ -1,7 +1,1 @@
 nerd_fonts_repo_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download"
-nerd_fonts_install:
-  - Hack
-  - FiraCode
-  - Meslo
-  - Iosevka
-  - SourceCodePro
